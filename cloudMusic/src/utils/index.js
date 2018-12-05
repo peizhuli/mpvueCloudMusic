@@ -48,5 +48,12 @@ export default {
     let minute = parseInt(time.substr(1,2));
     let sec = parseInt(time.substr(3,5));
     return (hour * 10 + minute) * 60 + sec;
+  },
+  formatPlayCount: function(count) {
+    return count > 10000 ? parseInt(count / 10000) + '万' : count + '人'
+  },
+  subStrCount: function(str, maxCount) {
+    str = str.trim().length > maxCount ? str.trim().substr(0,maxCount) + '...' : str;
+    return str;
   }
 }

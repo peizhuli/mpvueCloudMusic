@@ -36,8 +36,17 @@ export default {
   .pad-top {
     padding-top: 100rpx;
   }
+  .pad-10 {
+    padding: 10rpx;
+  }
   img {
     max-width: 100%;
+  }
+  .col-img {
+    height: 240rpx;
+  }
+  .play-item-name {
+    font-size: 26rpx;
   }
   .ivu-tabs {
     text-align: center;

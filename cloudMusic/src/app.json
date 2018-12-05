@@ -4,8 +4,10 @@
     "pages/logs/main",
     "pages/counter/main",
     "pages/account/main",
+    "pages/profileMusic/main",
     "pages/search/main",
-    "pages/login/main"
+    "pages/login/main",
+    "pages/DJRaio/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -25,18 +27,15 @@
         "text": "首页"
       },
       {
+        "pagePath": "pages/profileMusic/main",
+        "color": "white",
+        "text": "我的音乐"
+      },
+      {
         "pagePath": "pages/account/main",
         "color": "white",
         "text": "我的"
       }
     ]
-  },
-  "usingComponents": {
-    "i-row": "../../static/IView/row/index",
-    "i-col": "../../static/IView/col/index",
-    "i-button": "../../static/IView/button/index",
-    "i-icon": "../../static/IView/icon/index",
-    "i-tabs": "../../static/IView/tabs/index",
-    "i-tab": "../../static/IView/tab/index"
   }
 }
