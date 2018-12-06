@@ -38,7 +38,7 @@
       <div class="recommend-item">
         <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐歌单<span class="check-more">更多&gt;</span></div>
         <i-row class="recommend-play-list" :gutter="24">
-          <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id">
+          <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id" @click="goUrl('/pages/playListCategory/main?id=' + item.id)">
             <div class="play-pic-box">
               <img :src="item.picUrl" />
               <!--<div class="music-play-count"><i-icon type="ios-headset-outline" />{{ item.playCount > 10000 ? (item.playCount / 10000).toFixed(0) + '万' : (item.playCount.toFixed(0) + '人') }}</div>-->
@@ -339,6 +339,11 @@ export default {
     },
     subStrCount: function (str, maxCount) {
       return util.subStrCount(str, maxCount);
+    },
+    goUrl: function (url) {
+      wx.navigateTo({
+        url: url
+      });
     }
   }
 }

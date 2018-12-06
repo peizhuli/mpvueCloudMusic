@@ -7,7 +7,8 @@
     "pages/profileMusic/main",
     "pages/search/main",
     "pages/login/main",
-    "pages/DJRaio/main"
+    "pages/DJRaio/main",
+    "pages/playListCategory/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

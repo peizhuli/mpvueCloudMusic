@@ -42,7 +42,8 @@ export default {
   img {
     max-width: 100%;
   }
-  .col-img {
+  .col-img,
+  .col-content {
     height: 240rpx;
   }
   .play-item-name {
