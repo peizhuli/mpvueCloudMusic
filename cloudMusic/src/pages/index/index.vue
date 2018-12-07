@@ -92,7 +92,7 @@
       <div class="well-chosen-play-box" v-if="currentTab == 'homePlayList'">
         <i-row>
           <i-col i-class="pad-10" span="8" v-for="item in wellChosenPlay" :key="item.id">
-          <div class="play-item" @click="getPlayListDetail(item.id)">
+          <div class="play-item" @click="goUrl('/pages/playListCategory/main?id=' + item.id)">
             <img class="col-img" :src="item.coverImgUrl" />
             <div class="music-play-count"><i-icon type="ios-headset-outline" />{{ formatPlayCount(item.playCount) }}</div>
             <div class="creator"><i-icon type="ios-headset-outline" />{{ item.creator.nickname }}</div>

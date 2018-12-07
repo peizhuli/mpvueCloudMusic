@@ -6,8 +6,8 @@
           <i-col span="8">
             <img class="col-img" :src="categoryDetail.coverImgUrl" />
           </i-col>
-          <i-col span="16" class="category-info-content col-content">
-            <div class="category-info-box">
+          <i-col span="16" class="category-info-content">
+            <div class="category-info-box col-content">
               <div>
                 <i-avatar :src="categoryDetail.creator ? categoryDetail.creator.avatarUrl : ''"></i-avatar>
                 {{ categoryDetail.creator ? categoryDetail.creator.nickname : '' }}
@@ -40,7 +40,7 @@
         <i-icon class="play-all-action-icon" type="ios-options-outline" />
       </div>
       <ul class="category-detail-list padBtm">
-        <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goPlayMusic(item.id)">
+        <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">
           <div class="category-item">
             <i-row>
               <i-col span="2">
@@ -51,8 +51,8 @@
                   <span>{{ item.name }}</span>
                   <span v-if="item.alia.length"> - {{ item.alia["0"] }}</span>
                   <span class="more-icon-box">
-                    <i-icon type="md-arrow-dropright-circle" size="20" v-if="item.mv != 0" @click.stop="$router.push({path: '/playMV', query: { id: item.mv }})" />
-                    <i-icon type="md-more" size="20" @click.stop="showCurrentSongOptions(item.al.id, item.mv, item.id)" />
+                    <i-icon type="arrow-dropright-circle" size="20" v-if="item.mv != 0" @click.stop="$router.push({path: '/playMV', query: { id: item.mv }})" />
+                    <i-icon type="more" size="20" @click.stop="showCurrentSongOptions(item.al.id, item.mv, item.id)" />
                   </span>
                 </div>
                 <div class="artist-name">
@@ -66,16 +66,16 @@
       </ul>
     </div>
     <div class="music-option-box" v-show="showOptionsBox">
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="$router.push({path: '/playMV', query: { id: currentMVId }})">
-        <i-icon type="md-arrow-dropright-circle" size="30" color="#d6413d" />
+      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/playVideo/main?id=' + currentMVId)">
+        <i-icon type="live" size="30" color="#d6413d" />
         <span>查看视频</span>
       </div>
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="$router.push({path: '/album/albumDetail', query: { id: currentAlbumId }})">
-        <i-icon type="ios-albums-outline" size="30" color="#d6413d" />
+      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/album/main?id=' + currentAlbumId)">
+        <i-icon type="tasklist" size="30" color="#d6413d" />
         <span>查看专辑</span>
       </div>
       <div class="music-option-item" :disable="currentMVId == 0" @click.stop="delSongFromPlayList(currentSongId)">
-        <i-icon type="ios-trash" size="30" color="#d6413d" />
+        <i-icon type="trash" size="30" color="#d6413d" />
         <span>删除歌曲</span>
       </div>
     </div>
@@ -138,10 +138,7 @@
     height: 20%;
     padding: 2% 5%;
   }
-  .category-describe-box > div,
-  .category-info-content {
-    height: 100%;
-  }
+
   .category-info-box {
     padding: 0 5%;
   }
@@ -150,7 +147,7 @@
     text-align: center;
   }
   .category-info-box {
-    height: 100%;
+    font-size: 26rpx;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -192,7 +189,7 @@
     position: absolute;
     width: 100%;
     height: 60%;
-    bottom: 4rem;
+    bottom: 0;
     background: #fff;
     z-index: 9;
   }

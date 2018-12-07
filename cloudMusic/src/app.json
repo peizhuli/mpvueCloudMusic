@@ -8,7 +8,10 @@
     "pages/search/main",
     "pages/login/main",
     "pages/DJRaio/main",
-    "pages/playListCategory/main"
+    "pages/playListCategory/main",
+    "pages/playVideo/main",
+    "pages/playMusic/main",
+    "pages/album/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
