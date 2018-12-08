@@ -1,83 +1,25 @@
 <template>
-  <div class="app-content">
+  <div>
+    <div class="category-list">
+      <span @click="getCategoryType(-1)">全部</span>
+      <span v-for="(item, index) in categories" :key="index" @click="getCategoryType(index)">
+        <span>{{ item }}</span>
+      </span>
+    </div>
+    <ul class="sub-category-list">
+      <li class="sub-category-item" v-for="(item, index) in currentSubCategories" :key="index" @click="getCategoryInfos(item.name, 20, 0, 'hot')">
+        <span :data-type="item.category"> {{ item.name }} </span>
+      </li>
+    </ul>
+
     <div class="category-detail-box">
-      <div class="category-describe-box">
-        <i-row>
-          <i-col span="8">
-            <img class="col-img" :src="categoryDetail.coverImgUrl" />
-          </i-col>
-          <i-col span="16" class="category-info-content">
-            <div class="category-info-box col-content">
-              <div>
-                <i-avatar :src="categoryDetail.creator ? categoryDetail.creator.avatarUrl : ''"></i-avatar>
-                {{ categoryDetail.creator ? categoryDetail.creator.nickname : '' }}
-              </div>
-              <div>{{ categoryDetail.name }}</div>
-            </div>
-          </i-col>
-        </i-row>
-        <i-row class="category-count-box">
-          <i-col class="category-count-item" span="6">
-            <i-icon type="ios-briefcase" size="20" />
-            <div>{{ categoryDetail.subscribedCount }}</div>
-          </i-col>
-          <i-col class="category-count-item" span="6">
-            <i-icon type="ios-text-outline" size="20" @click="$router.push({path: '/Comments', query: { id: $route.query.id }})" />
-            <div>{{ categoryDetail.commentCount }}</div>
-          </i-col>
-          <i-col class="category-count-item" span="6">
-            <i-icon type="md-share" size="20" />
-            <div>{{ categoryDetail.shareCount }}</div>
-          </i-col>
-          <i-col class="category-count-item" span="6">
-            <i-icon type="ios-download-outline" size="20" />
-            <div>下载</div>
-          </i-col>
-        </i-row>
-      </div>
-      <div class="play-all-box">
-        <span>播放全部</span>
-        <i-icon class="play-all-action-icon" type="ios-options-outline" />
-      </div>
-      <ul class="category-detail-list padBtm">
-        <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">
-          <div class="category-item">
-            <i-row>
-              <i-col span="2">
-                <div>{{ index + 1 }}.</div>
-              </i-col>
-              <i-col span="22">
-                <div class="category-item-name">
-                  <span>{{ item.name }}</span>
-                  <span v-if="item.alia.length"> - {{ item.alia["0"] }}</span>
-                  <span class="more-icon-box">
-                    <i-icon type="arrow-dropright-circle" size="20" v-if="item.mv != 0" @click.stop="$router.push({path: '/playMV', query: { id: item.mv }})" />
-                    <i-icon type="more" size="20" @click.stop="showCurrentSongOptions(item.al.id, item.mv, item.id)" />
-                  </span>
-                </div>
-                <div class="artist-name">
-                  {{ item.ar[0].name }}
-                  <span> - {{ item.al.name }}</span>
-                </div>
-              </i-col>
-            </i-row>
-          </div>
+      <ul class="category-detail-list">
+        <li class="category-detail-item" v-for="item in categoryDetail" :key="item.id" @click="getCategoryDetail(item.id)">
+          <img class="col-img" :src="item.coverImgUrl" />
+          <p>{{ item.name }}</p>
+          <!--<p class="">{{ item.description }}</p>-->
         </li>
       </ul>
-    </div>
-    <div class="music-option-box" v-show="showOptionsBox">
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/playVideo/main?id=' + currentMVId)">
-        <i-icon type="live" size="30" color="#d6413d" />
-        <span>查看视频</span>
-      </div>
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/album/main?id=' + currentAlbumId)">
-        <i-icon type="tasklist" size="30" color="#d6413d" />
-        <span>查看专辑</span>
-      </div>
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="delSongFromPlayList(currentSongId)">
-        <i-icon type="trash" size="30" color="#d6413d" />
-        <span>删除歌曲</span>
-      </div>
     </div>
   </div>
 </template>
@@ -86,111 +28,73 @@
   import service from '../../service/service';
   export default {
     mounted() {
-      let id = this.$root.$mp.query.id;
-      this.getCategoryDetail(id);
+      this.currentCategory = this.$root.$mp.query.category || 0;
+      let currentCategoryName = this.$root.$mp.query.name || this.currentSubCategories[0].name;
+      this.getCategory();
+      this.getCategoryInfos(currentCategoryName, 20, 0, 'hot');
     },
     data() {
       return {
-        categoryDetail: {},
-        currentAlbumId: '',
-        currentMVId: '',
-        currentSongId: '',
-        showOptionsBox: false
+        categories: [],
+        subCategories: [],
+        currentSubCategories: [],
+        categoryDetail: [],
+        currentCategory: 0
       }
     },
     methods: {
-      getCategoryDetail: function(id) {
+      getCategory: function() {
         let vm = this;
-        service.getPlayDetailInfo(id).then(function(res) {
+        service.getPlayList().then(function(res) {
           if(res.code == 200) {
-            vm.categoryDetail = res.playlist;
+            vm.categories = res.categories;
+            vm.subCategories = res.sub;
+            vm.currentSubCategories = res.sub;
+            vm.$nextTick(function() {
+              vm.getCategoryType(this.currentCategory);
+            })
           }
         })
       },
-      showCurrentSongOptions: function (albumId, mvId, currentSongId) {
-        this.currentAlbumId = albumId;
-        this.currentMVId = mvId;
-        this.currentSongId = currentSongId;
-        this.showOptionsBox = true;
-      },
-      delSongFromPlayList: function ( songId) {
+      getCategoryInfos: function(cat,limit,order) {
         let vm = this;
-        let playListId = vm.categoryDetail.id;
-        service.playListOparation('del', playListId, songId).then(function (res) {
-        })
-      },
-      goUrl: function (url) {
-        wx.navigateTo({
-          url: url
+        service.getWellChosenList(cat,limit,order).then(function(res) {
+          if(res.code == 200) {
+            vm.categoryDetail = res.playlists;
+          }
         });
-      }
+      },
+      getCategoryType: function(type) {
+          console.log(type);
+        this.currentSubCategories = [];
+        if(type == -1) {
+          this.currentSubCategories = this.subCategories;
+        } else {
+          this.subCategories.map(item => {
+            if(item.category == type) {
+              this.currentSubCategories.push(item);
+            }
+          });
+        }
+      },
+      getCategoryDetail: function(id) {
+        this.$router.push({path: '/songsCategoryDetail', query: { id: id }});
+      },
     }
   }
 </script>
 
 <style scoped>
-  .category-detail-box {
-    width: 100%;
-    height: 100%;
-  }
-
-  .category-describe-box {
-    height: 20%;
-    padding: 2% 5%;
-  }
-
-  .category-info-box {
-    padding: 0 5%;
-  }
-  .category-count-box {
-    clear: both;
-    text-align: center;
-  }
-  .category-info-box {
-    font-size: 26rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-  }
-  .more-icon-box {
+  .sub-category-item {
     display: inline-block;
-    position: absolute;
-    right: 0;
+    cursor: pointer;
   }
-  .category-detail-list {
-    padding: 0 5% 200rpx 5%;
-  }
-  .category-item {
-    white-space: nowrap;
-    font-size: 28rpx;
-    color: #999;
-  }
-  .category-item-name {
-    display: inline-block;
-    color: #333;
-    width: 96%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  .artist-name {
+  .category-detail-item {
+    float: left;
+    width: 33.3%;
     font-size: 24rpx;
   }
-  .play-all-box {
-    padding: 10rpx;
-    clear: both;
-    font-size: 30rpx;
-  }
-  .play-all-action-icon {
-    float: right;
-  }
-  .music-option-box {
-    position: absolute;
+  .category-detail-item img {
     width: 100%;
-    height: 60%;
-    bottom: 0;
-    background: #fff;
-    z-index: 9;
   }
 </style>

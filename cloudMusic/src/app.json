@@ -9,9 +9,12 @@
     "pages/login/main",
     "pages/DJRaio/main",
     "pages/playListCategory/main",
+    "pages/playListCategoryDetail/main",
     "pages/playVideo/main",
     "pages/playMusic/main",
-    "pages/album/main"
+    "pages/album/main",
+    "pages/artistInfo/main",
+    "pages/artistType/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

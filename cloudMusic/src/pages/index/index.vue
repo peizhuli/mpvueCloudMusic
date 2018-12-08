@@ -38,7 +38,7 @@
       <div class="recommend-item">
         <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐歌单<span class="check-more">更多&gt;</span></div>
         <i-row class="recommend-play-list" :gutter="24">
-          <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id" @click="goUrl('/pages/playListCategory/main?id=' + item.id)">
+          <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
             <div class="play-pic-box">
               <img :src="item.picUrl" />
               <!--<div class="music-play-count"><i-icon type="ios-headset-outline" />{{ item.playCount > 10000 ? (item.playCount / 10000).toFixed(0) + '万' : (item.playCount.toFixed(0) + '人') }}</div>-->
@@ -82,9 +82,9 @@
     </div>
     <div class="tab-content" v-if="currentTab == 'homePlayList'">
       <div class="songs-type-box">
-        <span>全部歌单</span>
+        <span @click="goUrl('/pages/playListCategory/main')">全部歌单</span>
         <div class="hot-songs-type">
-            <span v-for="item in hotPlayType" :key="item.id">
+            <span v-for="item in hotPlayType" :key="item.id" @click="goUrl('/pages/playListCategory/main?category=' + item.category + '&name=' + item.name)">
               {{ item.name }}
             </span>
         </div>
@@ -92,7 +92,7 @@
       <div class="well-chosen-play-box" v-if="currentTab == 'homePlayList'">
         <i-row>
           <i-col i-class="pad-10" span="8" v-for="item in wellChosenPlay" :key="item.id">
-          <div class="play-item" @click="goUrl('/pages/playListCategory/main?id=' + item.id)">
+          <div class="play-item" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
             <img class="col-img" :src="item.coverImgUrl" />
             <div class="music-play-count"><i-icon type="ios-headset-outline" />{{ formatPlayCount(item.playCount) }}</div>
             <div class="creator"><i-icon type="ios-headset-outline" />{{ item.creator.nickname }}</div>
@@ -217,7 +217,9 @@ export default {
         if(url.startsWith('http')) {
           window.location.href = url;
         } else {
-          this.$router.push({ path: '/album/albumDetail', query: { id : id} });
+          wx.navigateTo({
+            url: '/pages/album/main?id=' + id
+          });
         }
       }
     },
@@ -287,6 +289,7 @@ export default {
         vm.hotPlayType = res.tags;
       })
     },
+
     getWellChosenPlay: function () {
       let vm = this;
       service.getWellChosenList().then(function (res) {;

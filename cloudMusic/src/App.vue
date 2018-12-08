@@ -46,6 +46,12 @@ export default {
   .col-content {
     height: 240rpx;
   }
+  .col-content {
+    padding-left: 20rpx;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+  }
   .play-item-name {
     font-size: 26rpx;
   }
