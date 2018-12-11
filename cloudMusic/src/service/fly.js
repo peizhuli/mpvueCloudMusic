@@ -12,21 +12,22 @@ request.interceptors.request.use( req => {
 });
 
 request.interceptors.response.use( (response, promise) => {
-  if(response.data.code == 301) {
+  return promise.resolve(response.data);
+}, (err, promise) => {
+  console.log(err);
+  if(err.response.data.code == 301) {
     wx.showToast({
       title: '请先登录',
       icon: 'none',
       duration: 2000
     });
+  } else {
+    wx.showToast({
+      title: '请求出错',
+      icon: 'none',
+      duration: 2000
+    });
   }
-  return promise.resolve(response.data);
-}, (err, promise) => {
-  console.log(err);
-  wx.showToast({
-    title: '请求出错',
-    icon: 'none',
-    duration: 2000
-  });
   return promise.reject();
 });
 

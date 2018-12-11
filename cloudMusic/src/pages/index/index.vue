@@ -23,13 +23,13 @@
           <p>私人FM</p>
         </i-col>
         <i-col span="8">
-          <div class="circle-border daily-recommend-music-count" @click="$router.push('/dailyRecommendSongs')">
+          <div class="circle-border daily-recommend-music-count" @click="goUrl('/pages/dailyRecommendMusic/main')">
             20
           </div>
           <p>每日歌曲推荐</p>
         </i-col>
         <i-col span="8">
-          <div class="circle-border" @click="$router.push('/cloudHotMusic')">
+          <div class="circle-border" @click="goUrl('/pages/cloudHotMusic/main')">
             <i-ccon type="ios-podium-outline" color="#d6413d" />
           </div>
           <p>云音乐热歌榜</p>
@@ -50,7 +50,7 @@
       <div class="recommend-item">
         <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐MV<span class="check-more" @click="$router.push('/MV')">更多&gt;</span></div>
         <ul class="recommend-play-list">
-          <li class="recommend-play-item" v-for="item in recommendMVs" :key="item.id" @click="$router.push({path: '/playMV', query: { id: item.id }})">
+          <li class="recommend-play-item" v-for="item in recommendMVs" :key="item.id" @click="goUrl('/pages/playMV/main?id=' + item.id)">
             <img :src="item.picUrl" />
             <p>{{ item.name }}</p>
             <p>{{ item.copywriter }}</p>
@@ -69,7 +69,7 @@
       </div>
       <div class="recommend-item">
         <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐电台<span class="check-more">更多&gt;</span></div>
-        <i-row class="right-content-box" v-for="item in recommendDJs" :key="item.id" @click="$router.push({path: '/DJDetail', query: { id: item.id }})">
+        <i-row class="right-content-box" v-for="item in recommendDJs" :key="item.id" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + item.id)">
           <i-col span="8" i-class="play-pic-box">
             <img :src="item.picUrl" />
           </i-col>
@@ -108,7 +108,7 @@
       </div>
       <div class="dj-box">
         <i-row class="dj-list">
-          <i-col span="6" class="dj-item" v-for="item in wellChosenDJs" :key="item.id" @click="getDJDetail(item.id)">
+          <i-col span="6" class="dj-item" v-for="item in wellChosenDJs" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
           <img class="col-img" :src="item.picUrl" />
           <p>{{ item.name }}</p>
           </i-col>
@@ -118,19 +118,21 @@
         </div>
       </div>
       <div class="" v-for="(djItem, djIndex) in djLists" :key="djIndex">
-        <div class="category-title" @click="$router.push({path: '/DJCategoryDetail', query: {id: djItem[0].categoryId}})">
+        <div class="category-title" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + djItem[0].categoryId)">
           <span>{{ djItem[0].category }}</span>
-          <i-ccon type="ios-arrow-forward" size="30" />
+          <i-ccon type="enter" size="30" />
         </div>
-        <div class="" v-for="item in djLists[index]" :key="item.id" @click="$router.push({path: '/DJDetail', query: {id: item.id}})">
-          <i-row class="right-content-box">
-            <i-col :span="6">
-            <img :src="item.picUrl" />
+        <div class="" v-for="item in djLists[djIndex]" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
+          <i-row class="enter">
+            <i-col span="6">
+            <img class="col-img" :src="item.picUrl" />
             </i-col>
-            <i-col span="18" class="right-info-box">
-            <div>{{ item.name }}</div>
-            <div>{{ item.rcmdtext }}</div>
-            <div>{{ item.lastUpdateProgramName }}</div>
+            <i-col span="18">
+              <div class="col-content">
+                <div>{{ item.name }}</div>
+                <div>{{ item.rcmdtext }}</div>
+                <div>{{ item.lastUpdateProgramName }}</div>
+              </div>
             </i-col>
           </i-row>
         </div>
@@ -140,8 +142,8 @@
       </div>
       <div class="dj-box">
         <i-row class="dj-list">
-          <i-col span="6" class="dj-item" v-for="item in DJCategories" :key="item.id" @click="getDJDetail(item.id)">
-          <img i-class="dj-type-icon" :src="item.pic56x56Url" />
+          <i-col span="6" class="dj-item" v-for="item in DJCategories" :key="item.id"  @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
+          <img class="dj-type-icon" :src="item.pic56x56Url" />
           <p>{{ item.name }}</p>
           </i-col>
         </i-row>
@@ -329,7 +331,6 @@ export default {
       let currentIndex = '';
       for(let i=0;i<6;i++) {
         currentIndex =  vm.DJCategories[i].id;
-        console.log(m.DJCategories[i]);
         service.getDJCategoryRecommend(currentIndex).then(function (res) {
           if(res.code == 200) {
             vm.djLists.push(res.djRadios.splice(0,3));

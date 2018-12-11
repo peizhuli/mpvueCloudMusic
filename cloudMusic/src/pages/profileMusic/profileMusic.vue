@@ -12,7 +12,7 @@
           <i-con type="ios-stats-outline" size="50" color="#d6413d" />
           <span>
               最近播放<span class="manage-count"> ({{ recentPlayListCount }})</span>
-              <i-con type="md-calendar" size="30" color="#d6413d"></i-con>
+              <i-con type="customerservice" size="30" color="#d6413d"></i-con>
           </span>
         </li>
         <li class="account-item">
@@ -36,14 +36,16 @@
         <i-con type="ios-settings-outline" size="30" color="#999" />
       </div>
       <div class="play-list">
-        <div class="play-list-item" v-for="item in playList" :key="item.id" @click="$router.push({path: '/songsCategoryDetail', query: {id: item.id}})">
+        <div class="play-list-item" v-for="item in playList" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
           <i-row>
             <i-col span="10">
-              <img :src="item.coverImgUrl" />
+              <img class="col-img" :src="item.coverImgUrl" />
             </i-col>
             <i-col span="14">
-              <div class="play-list-name">{{ item.name }}</div>
-              <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+              <div class="col-content">
+                <div class="play-list-name">{{ item.name }}</div>
+                <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+              </div>
             </i-col>
           </i-row>
         </div>
@@ -54,14 +56,16 @@
         <i-con type="ios-settings-outline" size="30" color="#999" />
       </div>
       <div class="play-list">
-        <div class="play-list-item" v-for="item in likePlayList" :key="item.id">
+        <div class="play-list-item" v-for="item in likePlayList" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
           <i-row>
             <i-col span="10">
-              <img :src="item.coverImgUrl" />
+              <img class="col-img" :src="item.coverImgUrl" />
             </i-col>
             <i-col span="14">
-              <div class="play-list-name">{{ item.name }}</div>
-              <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+              <div class="col-content">
+                <div class="play-list-name">{{ item.name }}</div>
+                <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+              </div>
             </i-col>
           </i-row>
         </div>
@@ -105,7 +109,6 @@
       getUserSubcount: function () {
         let vm = this;
         service.getUserSubcount().then(function (res) {
-            console.log(res);
             vm.createPlayListCount = res.createdPlaylistCount;
             vm.djCount = res.djRadioCount;
             vm.collectionCount = res.subPlaylistCount;
@@ -115,7 +118,6 @@
       getUserPlayList: function () {
         let vm = this;
         service.getUserSongs(vm.user.profile.userId).then(function (res) {
-          console.log(res);
           res.playlist.map(function(item) {
               if(item.creator.userId == vm.user.profile.userId) {
                 vm.playList.push(item);
@@ -137,6 +139,11 @@
       },
       getLocalMusic: function () {
 
+      },
+      goUrl: function (url) {
+        wx.navigateTo({
+          url: url
+        });
       }
     }
   }
@@ -159,7 +166,7 @@
   .account-item > i.ivu-icon {
     position: absolute;
     left: 0;
-    top: 1rem;
+    top: 20rpx;
   }
   .account-item > span {
     width: 100%;

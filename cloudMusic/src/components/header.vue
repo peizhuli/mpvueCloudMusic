@@ -19,7 +19,7 @@
     methods: {
       navigatorTo() {
         wx.navigateTo({
-          url: '/pages/search/search',
+          url: '/pages/search/main',
           success: function(res){
             console.log(res)
           },

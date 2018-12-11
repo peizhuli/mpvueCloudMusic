@@ -6,12 +6,12 @@
         <i-row i-class="">
           <i-col span="8">
           <!--<img class="profile-avatar" :src="user.profile.userId ? user.profile.avatarUrl : defaultAvatar" />-->
-            <i-avatar size="large" :src="user.profile.userId ? user.profile.avatarUrl : defaultAvatar"></i-avatar>
-            <p>{{ user.profile.userId ? user.profile.nickname : '未登录' }}</p>
+            <i-avatar size="large" :src="user.profile ? user.profile.avatarUrl : defaultAvatar"></i-avatar>
+            <p @click="logout()">{{ user.profile ? user.profile.nickname : '未登录' }}</p>
           </i-col>
           <i-col span="8" offset="8">
             <div class="daily-sign">
-              <i-button type="default" shape="circle" icon="md-create" @click="dailySign(user.profile.userId)">签到</i-button>
+              <i-button type="default" shape="circle" icon="brush" @click="dailySign(user.profile.userId)">签到</i-button>
             </div>
           </i-col>
         </i-row>
@@ -34,7 +34,7 @@
         <div>{{ followedsCount }}</div>
         </i-col>
         <i-col span="6">
-        <div><Icon type="md-create" /></div>
+        <div><i-icon type="editor" size="20" /></div>
         <div>我的资料</div>
         </i-col>
       </i-row>
@@ -42,33 +42,35 @@
     <div class="menu-list-box">
       <i-cell-group class="list-group">
         <i-cell class="list-item" title="我的消息">
-          <i-icon type="ios-mail-outline" slot="icon" />
+          <i-icon type="mail" slot="icon" />
         </i-cell>
       </i-cell-group>
       <i-cell-group class="list-group">
-        <i-cell class="list-item" title="VIP会员"></i-cell>
+        <i-cell class="list-item" title="VIP会员">
+          <i-icon type="integral" slot="icon" />
+        </i-cell>
         <i-cell class="list-item" title="商城">
-          <i-icon type="ios-cart-outline" slot="icon" />
+          <i-icon type="publishgoods_fill" slot="icon" />
         </i-cell>
         <i-cell class="list-item" title="在线听歌免流量">
-          <i-icon type="ios-briefcase-outline" slot="icon" />
+          <i-icon type="customerservice" slot="icon" />
         </i-cell>
       </i-cell-group>
       <i-cell-group class="list-group">
         <i-cell class="list-item" title="设置">
-          <i-icon type="ios-cart-outline" slot="icon" />
+          <i-icon type="setup" slot="icon" />
         </i-cell>
         <i-cell class="list-item" title="扫一扫">
-          <i-icon type="ios-cart-outline" slot="icon" />
+          <i-icon type="scan" slot="icon" />
         </i-cell>
         <i-cell class="list-item" title="主题换肤">
-          <Icon type="ios-cart-outline" slot="icon" />
+          <i-icon type="emoji" slot="icon" />
         </i-cell>
         <i-cell class="list-item" title="夜间模式">
           <i-icon type="ios-cart-outline" slot="icon" />
-          <i-switch v-model="openNightModel" slot="extra" />
+          <i-switch :value="openNightModel" slot="extra" />
         </i-cell>
-        <i-cell class="list-item" title="退出登录" @click="logout()">
+        <i-cell v-if="user.profile" class="list-item" title="退出登录" @click="logout()">
           <!--<i-icon type="ios-cart-outline"/>-->
           <!--<div class="" slot="extra"></div>-->
         </i-cell>
@@ -109,7 +111,6 @@
       },
       logout: function () {
         let vm = this;
-        console.log('logout');
         service.logout().then(function (res) {
           if(res.code == 200) {
             wx.showToast({

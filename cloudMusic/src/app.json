@@ -7,14 +7,18 @@
     "pages/profileMusic/main",
     "pages/search/main",
     "pages/login/main",
-    "pages/DJRaio/main",
+    "pages/DJRadioTypeDetail/main",
+    "pages/DJRadioDetail/main",
     "pages/playListCategory/main",
     "pages/playListCategoryDetail/main",
     "pages/playVideo/main",
     "pages/playMusic/main",
     "pages/album/main",
     "pages/artistInfo/main",
-    "pages/artistType/main"
+    "pages/artistType/main",
+    "pages/cloudHotMusic/main",
+    "pages/dailyRecommendMusic/main",
+    "pages/eventsAround/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -23,10 +27,10 @@
     "navigationBarTextStyle": "#fff"
   },
   "tabBar": {
-    "color": "#272636",
-    "selectedColor": "#FFD161",
-    "backgroundColor": "#fff",
-    "borderStyle": "#a8a8a8",
+    "color": "#fff",
+    "selectedColor": "#fff",
+    "backgroundColor": "#d6413d",
+    "borderStyle": "none",
     "list": [
       {
         "pagePath": "pages/index/main",
@@ -37,6 +41,11 @@
         "pagePath": "pages/profileMusic/main",
         "color": "white",
         "text": "我的音乐"
+      },
+      {
+        "pagePath": "pages/eventsAround/main",
+        "color": "white",
+        "text": "朋友"
       },
       {
         "pagePath": "pages/account/main",

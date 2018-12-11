@@ -18,26 +18,26 @@
         </i-row>
         <i-row class="category-count-box">
           <i-col class="category-count-item" span="6">
-            <i-icon type="ios-briefcase" size="20" />
+            <i-icon type="tasklist" size="20" />
             <div>{{ categoryDetail.subscribedCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="ios-text-outline" size="20" @click="$router.push({path: '/Comments', query: { id: $route.query.id }})" />
+            <i-icon type="message" size="20" @click="$router.push({path: '/Comments', query: { id: $route.query.id }})" />
             <div>{{ categoryDetail.commentCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="md-share" size="20" />
+            <i-icon type="share" size="20" />
             <div>{{ categoryDetail.shareCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="ios-download-outline" size="20" />
+            <i-icon type="success" size="20" />
             <div>下载</div>
           </i-col>
         </i-row>
       </div>
       <div class="play-all-box">
         <span>播放全部</span>
-        <i-icon class="play-all-action-icon" type="ios-options-outline" />
+        <i-icon class="play-all-action-icon" type="other" size="20" />
       </div>
       <ul class="category-detail-list padBtm">
         <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">

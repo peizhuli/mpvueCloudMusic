@@ -30,7 +30,7 @@ const API = {
   //签到
   dailySign: (type=1) => request.get('/daily_signin?type=' + type, null, BASEAPI),
   //获取动态消息
-  getDynamicNews: () => request.get('/event', null, BASEAPI),
+  getDynamicNews: () => request.get('/event', {cookie: wx.getStorageSync('cookie')}, BASEAPI),
 
   //banner
   getBanner: () => request.get('/banner', null, BASEAPI),
