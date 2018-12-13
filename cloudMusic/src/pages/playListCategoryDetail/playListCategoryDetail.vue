@@ -18,19 +18,19 @@
         </i-row>
         <i-row class="category-count-box">
           <i-col class="category-count-item" span="6">
-            <i-icon type="tasklist" size="20" />
+            <i class="music-detail-icon collect-icon" />
             <div>{{ categoryDetail.subscribedCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="message" size="20" @click="$router.push({path: '/Comments', query: { id: $route.query.id }})" />
+            <i class="music-detail-icon comment-icon" />
             <div>{{ categoryDetail.commentCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="share" size="20" />
+            <i class="music-detail-icon share-icon" />
             <div>{{ categoryDetail.shareCount }}</div>
           </i-col>
           <i-col class="category-count-item" span="6">
-            <i-icon type="success" size="20" />
+            <i class="music-detail-icon download-icon" />
             <div>下载</div>
           </i-col>
         </i-row>
@@ -51,7 +51,7 @@
                   <span>{{ item.name }}</span>
                   <span v-if="item.alia.length"> - {{ item.alia["0"] }}</span>
                   <span class="more-icon-box">
-                    <i-icon type="arrow-dropright-circle" size="20" v-if="item.mv != 0" @click.stop="$router.push({path: '/playMV', query: { id: item.mv }})" />
+                    <i class="list-video-icon" v-if="item.mv != 0" @click="goUrl('/pages/playVideo.main?id=' + item.mv)"></i>
                     <i-icon type="more" size="20" @click.stop="showCurrentSongOptions(item.al.id, item.mv, item.id)" />
                   </span>
                 </div>
@@ -162,8 +162,10 @@
     padding: 0 5% 200rpx 5%;
   }
   .category-item {
+    margin-bottom: 20rpx;
     white-space: nowrap;
     font-size: 28rpx;
+    line-height: 1.2;
     color: #999;
   }
   .category-item-name {

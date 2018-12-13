@@ -15,11 +15,11 @@
       </i-col>
       <i-col span="6">
       <i-badge :count="comments.length">
-        <Icon type="message" size="30" @click="$router.push({path: '/Comments', query: { type: 0, id: $route.query.id }})" />
+        <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + musicId)" />
       </i-badge>
       </i-col>
       <i-col span="6">
-      <Icon type="share" size="30" />
+      <i-icon type="share" size="30" />
       </i-col>
     </i-row>
     <i-row i-class="slide-box">
@@ -28,13 +28,13 @@
       </i-col>
       <i-col span="14">
       <!--<i-slide i-class="slider" :value="currentTime" :min="0" :max="maxTime" :tip-format="hideFormat" @on-change="slideMusicTime"></i-slide>-->
-        <slider :value="currentTime" :min="0" :max="maxTime" @change="slideMusicTime"></slider>
+        <slider :value="currentTime" :min="0" backgroundColor="#999" activeColor="#d6413d" block-color="#d6413d" @change="slideMusicTime"></slider>
       </i-col>
       <i-col span="5">
       <span>{{ duration }}</span>
       </i-col>
     </i-row>
-    <audio id="audio" :src="playUrl" @play="startPlay" @pause="stopPlay" @timeupdate="timeUpdate" @ended="endPlay"></audio>
+    <audio id="audio" :src="playUrl" @play="startPlay" @pause="stopPlay" @Seeked="seekedAudio()" @timeupdate="timeUpdate" @ended="endPlay"></audio>
 
     <div class="play-action-box">
       <i-icon type="tasklist" size="40" color="#d6413d" />
@@ -131,6 +131,9 @@
               vm.audio = wx.createInnerAudioContext();
               vm.audio.src = vm.playUrl;
               vm.audio.play();
+              vm.audio.onTimeUpdate = function(value) {
+                console.log(value);
+              }
             })
           });
           vm.SET_CURRENT_MUSIC_ID(id);
@@ -165,15 +168,17 @@
       },
       getMusicDuration: function() {
           let duration = this.audio.duration;
-          console.log(this.audio);
           this.maxTime = parseInt(duration);
           duration = util.formatterDuration(duration);
           this.duration = duration;
       },
       startPlay: function() {
         this.IsPlay = true;
+        this.audio.play();
+        console.log(this.audio.currentTime);
       },
       stopPlay: function() {
+        this.audio.pause();
         this.IsPlay = false;
       },
       timeUpdate: function() {
@@ -186,8 +191,14 @@
         this.currentTime = 0;
         this.playTime = '00:00';
       },
-      slideMusicTime: function(value) {
-        this.audio.currentTime = this.currentTime = value;
+      slideMusicTime: function(obj) {
+//        this.audio.currentTime = this.currentTime = obj.mp.detail.value;
+        this.audio.seek(obj.mp.detail.value);
+        console.log(this.audio);
+      },
+      seekedAudio: function(value) {
+          console.log(value);
+        //        this.audio.currentTime = this.currentTime = obj.mp.detail.value;
       },
       toggleLikeMusic: function () {
         let vm = this;
@@ -260,6 +271,11 @@
         });
         vm.musicId = vm.allPlayList[playIndex].song.id;
         vm.initPlay();
+      },
+      goUrl: function (url) {
+        wx.navigateTo({
+          url: url
+        });
       }
     },
     watch: {
@@ -294,6 +310,7 @@
   }
   .audio-pic-box > img {
     max-width: 100%;
+    /*max-height: 100%;*/
   }
   .play-list-box {
     width: 100%;

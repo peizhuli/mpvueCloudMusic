@@ -18,7 +18,9 @@
     "pages/artistType/main",
     "pages/cloudHotMusic/main",
     "pages/dailyRecommendMusic/main",
-    "pages/eventsAround/main"
+    "pages/eventsAround/main",
+    "pages/playRecord/main",
+    "pages/profileCollection/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -35,21 +37,29 @@
       {
         "pagePath": "pages/index/main",
         "color": "white",
+        "iconPath": "/static/img/tabBar/home-icon.png",
+        "selectedIconPath": "/static/img/tabBar/home-active-icon.png",
         "text": "首页"
       },
       {
         "pagePath": "pages/profileMusic/main",
         "color": "white",
+        "iconPath": "/static/img/tabBar/music-icon.png",
+        "selectedIconPath": "/static/img/tabBar/music-active-icon.png",
         "text": "我的音乐"
       },
       {
         "pagePath": "pages/eventsAround/main",
         "color": "white",
+        "iconPath": "/static/img/tabBar/friend-icon.png",
+        "selectedIconPath": "/static/img/tabBar/friend-active-icon.png",
         "text": "朋友"
       },
       {
         "pagePath": "pages/account/main",
         "color": "white",
+        "iconPath": "/static/img/tabBar/account-icon.png",
+        "selectedIconPath": "/static/img/tabBar/account-active-icon.png",
         "text": "我的"
       }
     ]

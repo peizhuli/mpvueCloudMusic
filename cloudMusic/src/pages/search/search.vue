@@ -178,6 +178,7 @@
 //                      };
 //                      vm.searchContent.push(obj);
 //                  })
+                console.log(vm.searchArrs);
                   vm.searchSuggest = {};
 
               }

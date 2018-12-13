@@ -18,40 +18,40 @@
       <i-row class="special-list">
         <i-col span="8">
           <div class="circle-border" @click="$router.push('/privateFM')">
-            <i-icon type="md-radio" color="#d6413d" />
+            <i class="home-recommend-icon home-fm-icon" />
           </div>
           <p>私人FM</p>
         </i-col>
         <i-col span="8">
           <div class="circle-border daily-recommend-music-count" @click="goUrl('/pages/dailyRecommendMusic/main')">
-            20
+
           </div>
           <p>每日歌曲推荐</p>
         </i-col>
         <i-col span="8">
           <div class="circle-border" @click="goUrl('/pages/cloudHotMusic/main')">
-            <i-ccon type="ios-podium-outline" color="#d6413d" />
+            <i class="home-recommend-icon top-music-icon" />
           </div>
           <p>云音乐热歌榜</p>
         </i-col>
       </i-row>
       <div class="recommend-item">
-        <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐歌单<span class="check-more">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />推荐歌单<span class="check-more">更多&gt;</span></div>
         <i-row class="recommend-play-list" :gutter="24">
           <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
             <div class="play-pic-box">
-              <img :src="item.picUrl" />
+              <img class="col-img" :src="item.picUrl" />
               <!--<div class="music-play-count"><i-icon type="ios-headset-outline" />{{ item.playCount > 10000 ? (item.playCount / 10000).toFixed(0) + '万' : (item.playCount.toFixed(0) + '人') }}</div>-->
+              <p class="play-name">{{ item.name }}</p>
             </div>
-            <p class="play-name">{{ item.name }}</p>
           </i-col>
         </i-row>
       </div>
       <div class="recommend-item">
-        <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐MV<span class="check-more" @click="$router.push('/MV')">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />推荐MV<span class="check-more" @click="$router.push('/MV')">更多&gt;</span></div>
         <ul class="recommend-play-list">
           <li class="recommend-play-item" v-for="item in recommendMVs" :key="item.id" @click="goUrl('/pages/playMV/main?id=' + item.id)">
-            <img :src="item.picUrl" />
+            <img class="block-img" :src="item.picUrl" />
             <p>{{ item.name }}</p>
             <p>{{ item.copywriter }}</p>
             <p>播放次数：{{ item.playCount }}</p>
@@ -59,19 +59,19 @@
         </ul>
       </div>
       <div class="recommend-item">
-        <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />独家放送<span class="check-more">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />独家放送<span class="check-more">更多&gt;</span></div>
         <ul class="recommend-play-list">
           <li class="recommend-play-item" v-for="item in privateContents" :key="item.id" @click="">
-            <img :src="item.picUrl" />
+            <img class="block-img" :src="item.picUrl" />
             <p>{{ item.name }}</p>
           </li>
         </ul>
       </div>
       <div class="recommend-item">
-        <div class="recommend-title"><i-icon type="md-calendar" size="30" color="#d6413d" />推荐电台<span class="check-more">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />推荐电台<span class="check-more">更多&gt;</span></div>
         <i-row class="right-content-box" v-for="item in recommendDJs" :key="item.id" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + item.id)">
           <i-col span="8" i-class="play-pic-box">
-            <img :src="item.picUrl" />
+            <img class="col-img" :src="item.picUrl" />
           </i-col>
           <i-col span="16" class="right-info-box">
             <p>{{ item.name }}</p>
@@ -107,12 +107,20 @@
         <span>付费精选</span>
       </div>
       <div class="dj-box">
-        <i-row class="dj-list">
-          <i-col span="6" class="dj-item" v-for="item in wellChosenDJs" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
-          <img class="col-img" :src="item.picUrl" />
-          <p>{{ item.name }}</p>
-          </i-col>
-        </i-row>
+        <swiper class="banner-box" autoplay="true" interval="3000" duration="600" display-multiple-items="3">
+          <block v-for="item in wellChosenDJs" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
+            <swiper-item>
+              <img class="col-img" :src="item.picUrl" />
+              <p>{{ item.name }}</p>
+            </swiper-item>
+          </block>
+        </swiper>
+        <!--<i-row class="dj-list">-->
+          <!--<i-col span="6" class="dj-item" v-for="item in wellChosenDJs" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">-->
+          <!--<img class="col-img" :src="item.picUrl" />-->
+          <!--<p>{{ item.name }}</p>-->
+          <!--</i-col>-->
+        <!--</i-row>-->
         <div class="more-info">
           <i-button type="error" ghost>更多付费节目</i-button>
         </div>
@@ -154,15 +162,15 @@
         <div class="top-music-item" v-for="item in topMusicList" :key="item.id" @click="$router.push({path: '/topList', query: { name: item.name }})">
           <i-row>
             <i-col span="8">
-            <img class="col-img" :src="item.coverImgUrl" />
-            <span class="update-frequency">{{ item.updateFrequency }}</span>
+              <img class="col-img" :src="item.coverImgUrl" />
+              <span class="update-frequency">{{ item.updateFrequency }}</span>
             </i-col>
             <i-col span="16" class="music-top-content">
-            <div class="music-top-list">
-              <div class="music-top-name play-item-name" v-for="(track, idx) in item.tracks" :key="idx">
-                {{ idx + 1 }}. {{ track.first }} - {{ track.second }}
+              <div class="music-top-list">
+                <div class="music-top-name play-item-name" v-for="(track, idx) in item.tracks" :key="idx">
+                  {{ idx + 1 }}. {{ track.first }} - {{ track.second }}
+                </div>
               </div>
-            </div>
             </i-col>
           </i-row>
         </div>
@@ -365,14 +373,14 @@ export default {
     text-align: center;
   }
   .circle-border {
-    height: 100rpx;
-    width: 100rpx;
+    height: 150rpx;
+    width: 150rpx;
     margin: 0 auto;
-    line-height: 100rpx;
+    line-height: 150rpx;
     text-align: center;
     border: 2px solid #d6413d;
     border-radius: 50%;
-    font-size: 32rpx;
+    font-size: 50rpx;
   }
   .circle-border.daily-recommend-music-count {
     line-height: 100rpx;
@@ -389,13 +397,14 @@ export default {
     border-bottom: 4px solid #d6413d;
   }
   .recommend-title {
+    width: 100%;
+    height: 80rpx;
+    display: inline-flex;
+    align-items: center;
     font-size: 30rpx;
   }
-  .play-pic-box img {
-    max-height: 100%;
-  }
   .banner-box {
-    padding: 60rpx 0 20rpx 0;
+    padding: 20rpx 0 20rpx 0;
   }
   .songs-type-box {
     font-size: 28rpx;
@@ -426,15 +435,39 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .dj-item {
+    font-size: 24rpx;
+  }
+  .home-recommend-icon {
+    display: inline-block;
+    width: 110rpx;
+    height: 110rpx;
+    position: relative;
+    top: 20rpx
+  }
+  .home-fm-icon {
+    background: url("../../../static/img/home/fm-icon.png") center no-repeat;
+  }
+  .top-music-icon {
+    background: url("../../../static/img/home/top-music-icon.png") center no-repeat;
+  }
+  .recommend-title-icon {
+    display: inline-block;
+    width: 72rpx;
+    height: 72rpx;
+    position: relative;
+    /*top: 30rpx;*/
+    background: url("../../../static/img/home/recommend-title-icon.png") center no-repeat;
+  }
 </style>
 <style>
   .play-pic-box {
-    height: 260rpx;
+    height: 320rpx;
   }
   .recommend-play-item {
     padding: 0 10rpx;
     text-align:center;
-    font-size: 22rpx;
+    font-size: 26rpx;
   }
   .tab-bar {
     padding-bottom: 40rpx;
@@ -443,5 +476,10 @@ export default {
   img.dj-type-icon {
     width: 120rpx;
     height: 120rpx;
+  }
+  .check-more {
+    position: absolute;
+    right: 0;
+    padding-right: 20rpx;
   }
 </style>

@@ -8,7 +8,7 @@
               本地音乐<span class="manage-count"> (5)</span>
           </span>
         </li>
-        <li class="account-item" @click="$router.push('/playRecord')">
+        <li class="account-item" @click="goUrl('/pages/playRecord/main')">
           <i-con type="ios-stats-outline" size="50" color="#d6413d" />
           <span>
               最近播放<span class="manage-count"> ({{ recentPlayListCount }})</span>
@@ -21,7 +21,7 @@
               我的电台<span class="manage-count"> ({{ djCount }})</span>
           </span>
         </li>
-        <li class="account-item" @click="$router.push({path: '/collection', query: { id: user.profile.userId }})">
+        <li class="account-item" @click="goUrl('/pages/profileCollection/main')">
           <i-con type="ios-person-add-outline" size="50" color="#d6413d" />
           <span>
               我的收藏<span class="manage-count"> ({{ collectionCount }}) </span>
@@ -80,10 +80,12 @@
   import service from '../../service/service';
   export default {
       mounted() {
-          this.getUserSubcount();
-          this.getUserPlayLists();
-          this.getUserPlayList();
-          this.getLocalMusic();
+          if(this.user.profile) {
+            this.getUserSubcount();
+            this.getUserPlayLists();
+            this.getUserPlayList();
+            this.getLocalMusic();
+          }
       },
       data() {
           return {

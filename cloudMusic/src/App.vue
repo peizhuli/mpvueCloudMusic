@@ -46,6 +46,9 @@ export default {
   .col-content {
     height: 240rpx;
   }
+  .block-img {
+    height: 260rpx;
+  }
   .col-content {
     padding-left: 20rpx;
     display: flex;
@@ -114,6 +117,30 @@ export default {
     position: absolute;
     right: 3%;
     top: 10%;
+  }
+  .music-detail-icon {
+    display: inline-block;
+    width: 80rpx;
+    height: 80rpx;
+    position: relative;
+  }
+  .collect-icon {
+    background: url("../static/img/music/collect-icon.png") center no-repeat;
+  }
+  .comment-icon {
+    background: url("../static/img/music/comment-icon.png") center no-repeat;
+  }
+  .share-icon {
+    background: url("../static/img/music/share-icon.png") center no-repeat;
+  }
+  .download-icon {
+    background: url("../static/img/music/down-load-icon.png") center no-repeat;
+  }
+  .list-video-icon {
+    display: inline-block;
+    width: 52rpx;
+    height: 36rpx;
+    background: url("../static/img/music/list-video-icon.png") center no-repeat;
   }
 
   .right-content-box {
