@@ -18,13 +18,13 @@
       </div>
       <i-row class="account-count-box">
         <i-col span="6">
-        <div @click="$router.push('/profileEvent')">
+        <div @click="goUrl('/pages/eventsAround/main?tab=1')">
           动态
           <div>{{ eventCount }}</div>
         </div>
         </i-col>
         <i-col span="6">
-        <div @click="$router.push({path: '/friends/follows'})">
+        <div @click="goUrl('/pages/eventsAround/main?tab=2')">
           关注
           <div>{{ followsCount }}</div>
         </div>
@@ -67,13 +67,9 @@
           <i-icon type="emoji" slot="icon" />
         </i-cell>
         <i-cell class="list-item" title="夜间模式">
-          <i-icon type="ios-cart-outline" slot="icon" />
-          <i-switch :value="openNightModel" slot="extra" />
+          <i-switch :value="openNightModel" slot="extra"></i-switch>
         </i-cell>
-        <i-cell v-if="user.profile" class="list-item" title="退出登录" @click="logout()">
-          <!--<i-icon type="ios-cart-outline"/>-->
-          <!--<div class="" slot="extra"></div>-->
-        </i-cell>
+        <i-cell v-if="user.profile" class="list-item" title="退出登录" @click="logout()"></i-cell>
       </i-cell-group>
     </div>
   </div>
@@ -125,6 +121,11 @@
             });
           }
         });
+      },
+      goUrl: function (url) {
+        wx.navigateTo({
+          url: url
+        });
       }
     }
   }
@@ -148,8 +149,9 @@
   .profile-info-content > div {
     height: 100%;
   }
+
   .list-group {
-    margin-top: 20rpx;
+    margin-top: 20rpx 0 ;
     background: #fff;
   }
   .account-count-box {
@@ -173,3 +175,4 @@
     line-height: 2;
   }
 </style>
+

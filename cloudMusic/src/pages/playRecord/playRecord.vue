@@ -4,8 +4,8 @@
       <i-tab key="weekly" title="最近一周"></i-tab>
       <i-tab key="all" title="全部"></i-tab>
     </i-tabs>
-    <div class="play-record-box" v-if="user.profile">
-      <div class="" v-if="currentTab == 'weekly'" v-for="item in weekList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
+    <div class="play-record-box" v-if="currentTab == 'weekly'">
+      <div class="" v-if="weekList.length" v-for="item in weekList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
         <i-row class="play-list-box">
           <i-col span="6">
           <img class="col-img" :src="item.song.al.picUrl" />
@@ -18,10 +18,15 @@
           </i-col>
         </i-row>
       </div>
-      <div class="" v-if="currentTab == 'all'" v-for="item in allList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
+      <div class="no-data" v-if="!weekList.length">
+        <p>暂无播放记录</p>
+      </div>
+    </div>
+    <div class="play-record-box" v-if="currentTab == 'all'">
+      <div class="" v-if="allList.length" v-for="item in allList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
         <i-row class="play-list-box">
           <i-col span="6">
-          <img class="col-img" :src="item.song.al.picUrl" />
+            <img class="col-img" :src="item.song.al.picUrl" />
           </i-col>
           <i-col span="18" class="play-list-content">
             <div class="col-img">
@@ -31,9 +36,9 @@
           </i-col>
         </i-row>
       </div>
-    </div>
-    <div v-else>
-      <p>暂无播放记录</p>
+      <div class="no-data" v-if="!allList.length">
+        <p>暂无播放记录</p>
+      </div>
     </div>
   </div>
 </template>
@@ -95,5 +100,11 @@
   .play-list-content {
     padding-left: 20rpx;
     font-size: 24rpx;
+  }
+  .no-data {
+    text-align: center;
+    line-height: 2;
+    font-size: 30rpx;
+    color: #333;
   }
 </style>

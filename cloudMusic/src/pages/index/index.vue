@@ -94,10 +94,10 @@
           <i-col i-class="pad-10" span="8" v-for="item in wellChosenPlay" :key="item.id">
           <div class="play-item" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
             <img class="col-img" :src="item.coverImgUrl" />
-            <div class="music-play-count"><i-icon type="ios-headset-outline" />{{ formatPlayCount(item.playCount) }}</div>
+            <div class="music-play-count"><i-icon type="customerservice" />{{ item.playCount }}</div>
             <div class="creator"><i-icon type="ios-headset-outline" />{{ item.creator.nickname }}</div>
           </div>
-          <div class="play-item-name">{{ subStrCount(item.name, 15) }}</div>
+          <div class="play-item-name">{{item.name }}</div>
           </i-col>
         </i-row>
       </div>
@@ -128,9 +128,9 @@
       <div class="" v-for="(djItem, djIndex) in djLists" :key="djIndex">
         <div class="category-title" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + djItem[0].categoryId)">
           <span>{{ djItem[0].category }}</span>
-          <i-ccon type="enter" size="30" />
+          <i-icon type="enter" size="24" />
         </div>
-        <div class="" v-for="item in djLists[djIndex]" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
+        <div class="dj-category-item" v-for="item in djLists[djIndex]" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
           <i-row class="enter">
             <i-col span="6">
             <img class="col-img" :src="item.picUrl" />
@@ -213,6 +213,14 @@ export default {
   components: {
     headerBar
   },
+//  computed: {
+//    wellChosenPlay: function() {
+//      return this.wellChosenPlay.map((item) => {
+//        item.name = item.name.length > 15 ? item.name.substr(0,10) + '...' : item.name;
+//        item.playCount = item.playCount > 10000 ? parseInt(item.playCount / 10000) + '万' : item.playCount + '人';
+//      });
+//    }
+//  },
   methods: {
     getBanners: function() {
       var vm = this;
@@ -302,8 +310,13 @@ export default {
 
     getWellChosenPlay: function () {
       let vm = this;
-      service.getWellChosenList().then(function (res) {;
-        vm.wellChosenPlay = res.playlists;
+      service.getWellChosenList().then(function (res) {
+//        vm.wellChosenPlay = res.playlists;
+        res.playlists.map((item) => {
+          item.name = item.name.length > 15 ? item.name.trim().substr(0,15) + '...' : item.name;
+          item.playCount = item.playCount > 10000 ? parseInt(item.playCount / 10000) + '万' : item.playCount + '人';
+          vm.wellChosenPlay.push(item);
+        });
       })
     },
     getTopMusicList: function () {
@@ -349,9 +362,6 @@ export default {
     formatPlayCount: function (count) {
       return util.formatPlayCount(count);
     },
-    subStrCount: function (str, maxCount) {
-      return util.subStrCount(str, maxCount);
-    },
     goUrl: function (url) {
       wx.navigateTo({
         url: url
@@ -366,6 +376,9 @@ export default {
     width: 100%;
     height: 400rpx;
     text-align: center;
+  }
+  .slide-image {
+    height: 400rpx;
   }
   .special-list {
     font-size: 28rpx;
@@ -386,15 +399,8 @@ export default {
     line-height: 100rpx;
     color: #d6413d;
   }
-
-  .tabBarItem {
-    margin: 0 20rpx;
-    display: inline-block;
-    font-size: 18rpx;
-    cursor: pointer;
-  }
-  .tabBarItem.active {
-    border-bottom: 4px solid #d6413d;
+  .songs-type-box {
+    padding: 10rpx 20rpx;
   }
   .recommend-title {
     width: 100%;
@@ -459,10 +465,17 @@ export default {
     /*top: 30rpx;*/
     background: url("../../../static/img/home/recommend-title-icon.png") center no-repeat;
   }
+  .dj-category-item {
+    font-size: 26rpx;
+    line-height: 2;
+  }
 </style>
 <style>
   .play-pic-box {
     height: 320rpx;
+  }
+  .play-item {
+    position: relative;
   }
   .recommend-play-item {
     padding: 0 10rpx;

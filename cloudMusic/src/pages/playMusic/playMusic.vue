@@ -112,9 +112,6 @@
         vm.getMusicLyric(vm.musicId);
         vm.getMusicComment(vm.musicId);
         vm.imgRotateAngle = 0;
-        setTimeout(function() {
-          vm.getMusicDuration();
-        },1000);
       },
       getMusicDetail: function (id) {
         let vm = this;

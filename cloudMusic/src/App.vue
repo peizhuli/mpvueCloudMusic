@@ -156,8 +156,9 @@ export default {
   .music-play-count {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 10rpx;
     padding: 2px 5px;
+    font-size: 24rpx;
     color: #fff;
     background: linear-gradient(left,rgba(9,9,9,0.2),rgba(3,3,3,0.8));
   }
@@ -166,13 +167,17 @@ export default {
     bottom: 10%;
     left: 5%;
     padding: 2px 5px;
+    font-size: 24rpx;
     color: #fff;
     background: linear-gradient(left,rgba(9,9,9,0.2),rgba(3,3,3,0.8));
   }
   .play-name {
     font-size: 26rpx;
   }
-
+  .float-right {
+    float: right;
+    padding-right: 10rpx;
+  }
   .ivu-slider-button,
   .ivu-slider-button-dragging,
   .ivu-slider-button:focus,

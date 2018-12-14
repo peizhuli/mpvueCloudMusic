@@ -8,10 +8,10 @@
       <span style="font-size: 32rpx; float: right; margin-right: 10rpx;" @click="goBack">取消</span>
     </div>
     <div class="pad-top">
-      <div class="hot-singers" @click="">
-          <i-icon type="ios-person-outline" size="30" />
+      <div class="hot-singers" @click="goUrl('/pages/artistType/main')">
+          <i-icon type="group" size="24" />
           <span>歌手分类</span>
-          <i-icon type="ios-arrow-forward" size="30" />
+          <i-icon type="enter" size="24" />
       </div>
       <div class="hot-search-box">
         <p>热门搜索</p>
@@ -49,27 +49,19 @@
         <div class="search-detail-box">
           <ul class="">
             <li v-for="item in searchArrs" :key="item.id">
-              {{ item.name }}
+              <!--{{ item.name }}-->
+              <i-row v-if="item.picUrl != null">
+                <i-col span="6">
+                  <img class="col-img" :src="item.picUrl" />
+                </i-col>
+                <i-col span="18">
+                  <div>{{ item.name }}</div>
+                </i-col>
+              </i-row>
+              <span v-else>{{ item.name }}</span>
             </li>
           </ul>
         </div>
-        <!--<Tabs value="song">-->
-          <!--<TabPane label="单曲" name="song" @click="searchMusic(keyword, '1', 30, 0)">-->
-            <!---->
-          <!--</TabPane>-->
-          <!--<TabPane label="歌手" name="artist" @click="searchMusic(keyword, '100', 30, 0)">-->
-
-          <!--</TabPane>-->
-          <!--<TabPane label="专辑" name="album" @click="searchMusic(keyword, '10', 30, 0)">-->
-
-          <!--</TabPane>-->
-          <!--<TabPane label="歌单" name="playLists" @click="searchMusic(keyword, '1', 30, 0)">-->
-
-          <!--</TabPane>-->
-          <!--<TabPane label="视频" name="videos" @click="searchMusic(keyword, '1004', 30, 0)">-->
-
-          <!--</TabPane>-->
-        <!--</Tabs>-->
       </div>
     </div>
   </div>
@@ -223,6 +215,11 @@
       },
       goBack: function () {
         wx.navigateBack({delta: 1});
+      },
+      goUrl: function (wx) {
+        wx.navigateTo({
+          url: url
+        });
       }
     }
   }

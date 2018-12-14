@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="category-box">
     <div class="category-list">
       <span @click="getCategoryType(-1)">全部</span>
-      <span v-for="(item, index) in categories" :key="index" @click="getCategoryType(index)">
+      <span class="category-span" v-for="(item, index) in categories" :key="index" @click="getCategoryType(index)">
         <span>{{ item }}</span>
       </span>
     </div>
@@ -28,8 +28,8 @@
   import service from '../../service/service';
   export default {
     mounted() {
-      this.currentCategory = this.$root.$mp.query.category || 0;
-      let currentCategoryName = this.$root.$mp.query.name || this.currentSubCategories[0].name;
+      this.currentCategory = this.$root.$mp.query.category || -1;
+      let currentCategoryName = this.$root.$mp.query.name || '全部';
       this.getCategory();
       this.getCategoryInfos(currentCategoryName, 20, 0, 'hot');
     },
@@ -39,7 +39,7 @@
         subCategories: [],
         currentSubCategories: [],
         categoryDetail: [],
-        currentCategory: 0
+        currentCategory: -1
       }
     },
     methods: {
@@ -85,16 +85,27 @@
 </script>
 
 <style scoped>
+  .category-list,
+  .sub-category-list {
+    padding: 10rpx 20rpx;
+  }
   .sub-category-item {
     display: inline-block;
     cursor: pointer;
+    margin-right: 20rpx;
+    font-size: 26rpx;
+    color: #666;
   }
   .category-detail-item {
     float: left;
-    width: 33.3%;
+    width: calc(33.3% - 20rpx);
+    padding: 10rpx;
     font-size: 24rpx;
   }
   .category-detail-item img {
     width: 100%;
+  }
+  .category-span {
+    margin-left: 20rpx;
   }
 </style>

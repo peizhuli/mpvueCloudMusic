@@ -41,7 +41,9 @@
   import service from '../../service/service';
   export default {
     mounted() {
-      this.getDynamicNews();
+      let tab = this.$root.$mp.query.tab;
+      if(!tab) return;
+      tab == 1 ? this.getDynamicNews() : this.getUserFocusList();
     },
     data() {
       return {

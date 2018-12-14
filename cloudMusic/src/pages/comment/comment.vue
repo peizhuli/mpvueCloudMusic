@@ -21,7 +21,10 @@
           </i-col>
           <i-col span="20" class="comment-content">
             <div class="nickname">{{ item.user ? item.user.nickname : '' }}
-              <i-badge :count="item.likedCount > 99 ? '99+' : item.likedCount" class="like-music-icon"><i-icon type="md-thumbs-up" :color="item.liked ? '#ff0000' : '#999'" size="24" @click="toggleLikeComment(item.liked, item.commentId)"/></i-badge>
+              <span class="float-right">
+                <i-icon type="praise" :color="item.liked ? '#ff0000' : '#999'" size="24" @click="toggleLikeComment(item.liked, item.commentId)"/>
+                {{ item.likedCount > 99 ? '99+' : item.likedCount }}
+              </span>
             </div>
           <div>{{ item.time | formatTime }}</div>
           <div>{{ item.content }}</div>
@@ -33,9 +36,8 @@
       </div>
     </div>
     <div class="comment-publish-box">
-      <i-input placeholder="输入评论内容..." v-model="commentContent">
-      <i-button slot="append" @click="publishComment()">评论</i-button>
-      </i-input>
+      <input class="comment-input" placeholder="输入评论内容..." v-model="commentContent" />
+      <button class="comment-btn" @click="publishComment()">评论</button>
     </div>
   </div>
 </template>
@@ -154,6 +156,27 @@
     position: fixed;
     bottom: 0;
     border: 1px solid #ccc;
+    background: #fff;
     /*box-shadow: 0px 2px 5px 5px rgba(125,125,125,0.6);*/
+  }
+  .comment-input {
+    width: 80%;
+    height: 100%;
+    padding-left: 10rpx;
+    display: inline-block;
+    font-size: 24rpx;
+    border: none;
+    background: #fff;
+    outline: none;
+  }
+  .comment-btn {
+    height: 100%;
+    float: right;
+    font-size: 30rpx;
+    line-height:3;
+    color: #fff;
+    border: none;
+    border-radius:0;
+    background: #e64340;
   }
 </style>
