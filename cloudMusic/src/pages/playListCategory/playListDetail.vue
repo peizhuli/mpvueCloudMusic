@@ -78,7 +78,10 @@
         }
       },
       getCategoryDetail: function(id) {
-        this.$router.push({path: '/songsCategoryDetail', query: { id: id }});
+//        this.$router.push({path: '/songsCategoryDetail', query: { id: id }});
+        wx.navigateTo({
+          url: '/pages/playListCategoryDetail/main?id=' + id
+        });
       },
     }
   }

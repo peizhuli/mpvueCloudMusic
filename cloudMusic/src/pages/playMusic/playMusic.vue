@@ -27,19 +27,18 @@
       <span>{{ playTime }}</span>
       </i-col>
       <i-col span="14">
-      <!--<i-slide i-class="slider" :value="currentTime" :min="0" :max="maxTime" :tip-format="hideFormat" @on-change="slideMusicTime"></i-slide>-->
-        <slider :value="currentTime" :min="0" backgroundColor="#999" activeColor="#d6413d" block-color="#d6413d" @change="slideMusicTime"></slider>
+        <slider :value="currentTime" :min="0" :max="maxTime" backgroundColor="#999" activeColor="#d6413d" block-color="#d6413d" block-size="18" @change="slideMusicTime"></slider>
       </i-col>
       <i-col span="5">
       <span>{{ duration }}</span>
       </i-col>
     </i-row>
-    <audio id="audio" :src="playUrl" @play="startPlay" @pause="stopPlay" @Seeked="seekedAudio()" @timeupdate="timeUpdate" @ended="endPlay"></audio>
+    <!--<audio id="audio" :src="playUrl" @play="startPlay" @pause="stopPlay" @Seeked="seekedAudio()" @timeupdate="timeUpdate" @ended="endPlay"></audio>-->
 
     <div class="play-action-box">
       <i-icon type="tasklist" size="40" color="#d6413d" />
       <i-icon type="return" size="40" color="#d6413d" @click.stop="preMusic()" />
-      <i-icon :type="IsPlay ? 'suspend' : 'play'" size="40" color="#d6413d" @click="IsPlay ? stopPlay() : startPlay()" />
+      <i-icon :type="IsPlay ? 'suspend' : 'play'" size="40" color="#d6413d" @click="togglePlay()" />
       <i-icon type="enter" size="40" color="#d6413d" @click.stop="nextMusic()" />
       <!--<Icon type="md-more" size="40" @click="getUserPlayLists" />-->
       <i-icon type="other" size="40" @click="getUserPlayLists" />
@@ -109,9 +108,35 @@
         let vm = this;
         vm.getMusicDetail(vm.musicId);
         vm.getMusicUrl(vm.musicId);
-        vm.getMusicLyric(vm.musicId);
-        vm.getMusicComment(vm.musicId);
+        vm.audio = wx.createInnerAudioContext();
+        vm.audio.src = vm.playUrl;
+        vm.audio.onCanplay(function() {
+          vm.audio.play();
+          vm.IsPlay = true;
+        });
+        vm.audio.onTimeUpdate(function() {
+          vm.currentTime = vm.audio.currentTime;
+          vm.playTime = util.formatterDuration(vm.currentTime);
+        });
+        vm.audio.onEnded(function() {
+          vm.IsPlay = false;
+          vm.audio.pause();
+          vm.currentTime = 0;
+          vm.playTime = '00:00';
+        });
+//        vm.audio.onSeeked(function(value) {
+//            vm.audio.seek(vm.currentTime);
+//        });
+        let durationInterval = setInterval(function () {
+            if(vm.audio.duration) {
+                clearInterval(durationInterval);
+            }
+          vm.getMusicDuration();
+        },50);
+//        vm.getMusicLyric(vm.musicId);
+//        vm.getMusicComment(vm.musicId);
         vm.imgRotateAngle = 0;
+
       },
       getMusicDetail: function (id) {
         let vm = this;
@@ -124,14 +149,18 @@
         if(id) {
           service.getPlayUrl(id).then(function(res) {
             vm.playUrl = res.data["0"].url;
-            vm.$nextTick(function () {
-              vm.audio = wx.createInnerAudioContext();
-              vm.audio.src = vm.playUrl;
-              vm.audio.play();
-              vm.audio.onTimeUpdate = function(value) {
-                console.log(value);
-              }
-            })
+//            vm.$nextTick(function () {
+//              vm.audio = wx.createInnerAudioContext();
+//              vm.audio.src = vm.playUrl;
+//              vm.audio.play();
+//              setTimeout(function () {
+//                  console.log(vm.audio);
+//                vm.getMusicDuration();
+//              },1000);
+//              vm.audio.onTimeUpdate = function(value) {
+//                console.log(value);
+//              }
+//            })
           });
           vm.SET_CURRENT_MUSIC_ID(id);
           vm.likeMusicList.map(function (item) {
@@ -169,33 +198,19 @@
           duration = util.formatterDuration(duration);
           this.duration = duration;
       },
-      startPlay: function() {
-        this.IsPlay = true;
-        this.audio.play();
-        console.log(this.audio.currentTime);
-      },
-      stopPlay: function() {
-        this.audio.pause();
-        this.IsPlay = false;
-      },
-      timeUpdate: function() {
-        this.currentTime = this.audio.currentTime;
-        this.playTime = util.formatterDuration(this.audio.currentTime);
-      },
-      endPlay: function() {
-        this.IsPlay = false;
-        this.audio.pause();
-        this.currentTime = 0;
-        this.playTime = '00:00';
-      },
-      slideMusicTime: function(obj) {
-//        this.audio.currentTime = this.currentTime = obj.mp.detail.value;
-        this.audio.seek(obj.mp.detail.value);
+      togglePlay: function() {
+        this.IsPlay = !this.IsPlay;
+        this.IsPlay ? this.audio.play() : this.audio.pause();
         console.log(this.audio);
       },
-      seekedAudio: function(value) {
-          console.log(value);
-        //        this.audio.currentTime = this.currentTime = obj.mp.detail.value;
+      slideMusicTime: function(obj) {
+        this.playTime = util.formatterDuration(obj.mp.detail.value);
+        this.currentTime = obj.mp.detail.value;
+        this.audio.seek(obj.mp.detail.value);
+        if(this.audio.paused) {
+          this.audio.play();
+        }
+//        this.audio.play();
       },
       toggleLikeMusic: function () {
         let vm = this;
@@ -274,9 +289,6 @@
           url: url
         });
       }
-    },
-    watch: {
-
     }
   }
 </script>
