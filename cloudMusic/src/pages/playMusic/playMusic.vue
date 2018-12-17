@@ -1,11 +1,13 @@
 <template>
   <div class="app-content">
     <div class="playing-audio-box">
-      <div class="audio-pic-box" @click="showLrc()">
+      <div class="playing-bg-box">
+        <img :src="musicInfo.al ? musicInfo.al.picUrl : ''" />
+      </div>
+      <div :class="{'audio-pic-box': true, 'playing': IsPlay, 'pause': !IsPlay }" @click="showLrc()">
         <img ref="albumImg" id="albumImg" :src="musicInfo.al ? musicInfo.al.picUrl : ''" />
       </div>
     </div>
-    <!--<p>{{ lyric }}</p>-->
     <i-row class="song-action-box">
       <i-col span="6">
       <i-icon :type="IsLike ? 'like_fill' : 'like'" :color="IsLike ? '#d6413d' : ''" size="30" @click="toggleLikeMusic()" />
@@ -14,9 +16,7 @@
       <i-icon type="ios-download-outline" size="30" />
       </i-col>
       <i-col span="6">
-      <i-badge :count="comments.length">
         <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + musicId)" />
-      </i-badge>
       </i-col>
       <i-col span="6">
       <i-icon type="share" size="30" />
@@ -33,14 +33,11 @@
       <span>{{ duration }}</span>
       </i-col>
     </i-row>
-    <!--<audio id="audio" :src="playUrl" @play="startPlay" @pause="stopPlay" @Seeked="seekedAudio()" @timeupdate="timeUpdate" @ended="endPlay"></audio>-->
-
     <div class="play-action-box">
       <i-icon type="tasklist" size="40" color="#d6413d" />
       <i-icon type="return" size="40" color="#d6413d" @click.stop="preMusic()" />
       <i-icon :type="IsPlay ? 'suspend' : 'play'" size="40" color="#d6413d" @click="togglePlay()" />
       <i-icon type="enter" size="40" color="#d6413d" @click.stop="nextMusic()" />
-      <!--<Icon type="md-more" size="40" @click="getUserPlayLists" />-->
       <i-icon type="other" size="40" @click="getUserPlayLists" />
     </div>
     <div class="play-list-box" ref="playListBox">
@@ -106,6 +103,7 @@
       ...mapMutations(['SET_CURRENT_MUSIC_ID', 'SET_LIKE_MUSIC_LIST']),
       initPlay: function() {
         let vm = this;
+        vm.IsShowLrc = false;
         vm.getMusicDetail(vm.musicId);
         vm.getMusicUrl(vm.musicId);
         vm.audio = wx.createInnerAudioContext();
@@ -124,17 +122,15 @@
           vm.currentTime = 0;
           vm.playTime = '00:00';
         });
-//        vm.audio.onSeeked(function(value) {
-//            vm.audio.seek(vm.currentTime);
-//        });
+        vm.audio.onSeeked(function() {
+            console.log(vm.audio);
+        });
         let durationInterval = setInterval(function () {
             if(vm.audio.duration) {
                 clearInterval(durationInterval);
             }
           vm.getMusicDuration();
         },50);
-//        vm.getMusicLyric(vm.musicId);
-//        vm.getMusicComment(vm.musicId);
         vm.imgRotateAngle = 0;
 
       },
@@ -149,18 +145,6 @@
         if(id) {
           service.getPlayUrl(id).then(function(res) {
             vm.playUrl = res.data["0"].url;
-//            vm.$nextTick(function () {
-//              vm.audio = wx.createInnerAudioContext();
-//              vm.audio.src = vm.playUrl;
-//              vm.audio.play();
-//              setTimeout(function () {
-//                  console.log(vm.audio);
-//                vm.getMusicDuration();
-//              },1000);
-//              vm.audio.onTimeUpdate = function(value) {
-//                console.log(value);
-//              }
-//            })
           });
           vm.SET_CURRENT_MUSIC_ID(id);
           vm.likeMusicList.map(function (item) {
@@ -175,6 +159,7 @@
         if(id) {
           service.getIcy(id).then(function(res) {
             if(res.code == 200) {
+              vm.lyric = [];
               if(!res.nolyric) {
                 let lrc = res.lrc.lyric.split('\n');
                 lrc.map(function (item) {
@@ -201,7 +186,6 @@
       togglePlay: function() {
         this.IsPlay = !this.IsPlay;
         this.IsPlay ? this.audio.play() : this.audio.pause();
-        console.log(this.audio);
       },
       slideMusicTime: function(obj) {
         this.playTime = util.formatterDuration(obj.mp.detail.value);
@@ -210,7 +194,6 @@
         if(this.audio.paused) {
           this.audio.play();
         }
-//        this.audio.play();
       },
       toggleLikeMusic: function () {
         let vm = this;
@@ -227,6 +210,9 @@
         })
       },
       showLrc: function () {
+        if(!this.lyric.length) {
+          this.getMusicLyric(this.musicId);
+        }
         this.IsShowLrc = true;
       },
       getMusicComment: function (id) {
@@ -297,6 +283,8 @@
   .playing-audio-box {
     width: 100%;
     height: 60%;
+    /*position: relative;*/
+    /*overflow: hidden;*/
   }
   .song-action-box {
     text-align: center;
@@ -306,20 +294,38 @@
     justify-content: space-around;
     align-items: center;
     padding-bottom: 100rpx;
-    /*text-align: center;*/
+  }
+  .playing-bg-box {
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    filter: blur(30px);
+    -webkit-filter: blur(30px);
+  }
+  .playing-bg-box img {
+    width: 100%;
+    height: 100%;
   }
   .audio-pic-box {
-    width: 70%;
+    width: 60%;
     margin: 5% auto;
-    border-radius: 50%;
-    overflow: hidden;
+    background: none;
+  }
+  .audio-pic-box.playing {
+    animation: rotate 30s linear infinite;
+  }
+  .audio-pic-box.pause {
+    animation-play-state: paused;
   }
   .play-action-box i {
     cursor: pointer;
   }
   .audio-pic-box > img {
-    max-width: 100%;
-    /*max-height: 100%;*/
+    position: relative;
+    border-radius: 50%;
   }
   .play-list-box {
     width: 100%;
@@ -350,8 +356,5 @@
   }
   #albumImg {
     transition: all 0.1s;
-  }
-  .slide-box {
-    font-size: 24rpx;
   }
 </style>
