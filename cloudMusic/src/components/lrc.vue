@@ -3,7 +3,7 @@
     <div class="app-content lrc-list" v-if="lrcList.length">
       <scroll-view scroll-y scroll-with-animation :scroll-into-view="'line' + currentIndex">
         <div class="lrc-item" :id="'line' + index" v-for="(item, index) in lrcList" :key="index" :data-index="index">
-          <span :class="{currentLrc: true, active: item.sec <= currentTime && lrcList[index + 1].sec >= currentTime}">{{ item.content }}</span>
+          <span :class="{currentLrc: true, active: item.sec < currentTime && lrcList[index + 1].sec >= currentTime}">{{ item.content }}</span>
         </div>
       </scroll-view>
     </div>
@@ -12,9 +12,6 @@
     </div>
   </div>
 </template>
-
-
-
 <script>
   //将歌词按照时间分割成一个obj，存入一个数组中，播放音乐时，监听播放，
   // 当前播放时间 = 数组中的某一个obj['time']时， 改变当前歌词高亮下标，并滚动到对应的播放时间点(transform: -100%)
@@ -34,7 +31,7 @@
           currentTime(val) {
               let vm = this;
               vm.lrcList.map(function(item, index) {
-                  if(item.sec == parseInt(val)) {
+                if(item.sec == parseInt(val)) {
                     vm.currentIndex = index;
                   }
               });
@@ -57,7 +54,9 @@
   }
   .lrc-list {
     text-align: center;
-    font-size: 24rpx;
+    font-size:30rpx;
+    line-height:2;
+
   }
   .currentLrc {
     transition: all 0.5s;

@@ -44,7 +44,7 @@
             <i-col span="14">
               <div class="col-content">
                 <div class="play-list-name">{{ item.name }}</div>
-                <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+                <div>更新时间：{{ item.trackUpdateTime }}</div>
               </div>
             </i-col>
           </i-row>
@@ -64,7 +64,7 @@
             <i-col span="14">
               <div class="col-content">
                 <div class="play-list-name">{{ item.name }}</div>
-                <div>更新时间：{{ formatterTime(item.trackUpdateTime) }}</div>
+                <div>更新时间：{{ item.trackUpdateTime }}</div>
               </div>
             </i-col>
           </i-row>
@@ -121,6 +121,7 @@
         let vm = this;
         service.getUserSongs(vm.user.profile.userId).then(function (res) {
           res.playlist.map(function(item) {
+              item.trackUpdateTime = util.formatterTime(item.trackUpdateTime);
               if(item.creator.userId == vm.user.profile.userId) {
                 vm.playList.push(item);
               } else {

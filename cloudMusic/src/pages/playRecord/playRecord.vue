@@ -29,7 +29,7 @@
             <img class="col-img" :src="item.song.al.picUrl" />
           </i-col>
           <i-col span="18" class="play-list-content">
-            <div class="col-img">
+            <div class="col-content">
               <div>{{ item.song.name }} - {{ item.song.ar[0].name }}</div>
               <div v-if="item.song.alia.length">{{ item.song.alia["0"] }}</div>
             </div>

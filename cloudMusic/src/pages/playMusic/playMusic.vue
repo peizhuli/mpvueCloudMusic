@@ -34,23 +34,27 @@
       </i-col>
     </i-row>
     <div class="play-action-box">
-      <i-icon type="tasklist" size="40" color="#d6413d" />
-      <i-icon type="return" size="40" color="#d6413d" @click.stop="preMusic()" />
-      <i-icon :type="IsPlay ? 'suspend' : 'play'" size="40" color="#d6413d" @click="togglePlay()" />
-      <i-icon type="enter" size="40" color="#d6413d" @click.stop="nextMusic()" />
-      <i-icon type="other" size="40" @click="getUserPlayLists" />
+      <i :class="{playOrderIcon: true, randomIcon: playOrderType == 0, sequenceIcon: playOrderType == 1, listCircleIcon: playOrderType == 2, singleCircle: playOrderType == 3}"></i>
+      <i class="musicActionIcon prevIcon" @click.stop="preMusic()" ></i>
+      <i :class="{musicActionIcon: true, playIcon: IsPlay, pauseIcon: !IsPlay}" @click="togglePlay()"></i>
+      <i class="musicActionIcon nextIcon" @click.stop="nextMusic()"></i>
+      <i class="musicActionIcon listIcon" @click="getUserPlayLists"></i>
+      <!--<i-icon type="return" size="40" color="#d6413d" @click.stop="preMusic()" />-->
+      <!--<i-icon :type="IsPlay ? 'suspend' : 'play'" size="40" color="#d6413d" @click="togglePlay()" />-->
+      <!--<i-icon type="enter" size="40" color="#d6413d" @click.stop="nextMusic()" />-->
+      <!--<i-icon type="other" size="40" @click="getUserPlayLists" />-->
     </div>
-    <div class="play-list-box" ref="playListBox">
+    <div :class="{playListBox: true, show: IsShowPlayList}" ref="playListBox">
       <div class="list-padding" @click="hidePlayList()"></div>
       <div class="play-list">
         <div class="play-item" v-for="item in allPlayList" :key="item.song.id">
           <i-row class="">
-            <i-col span="22">
+            <i-col span="22" @click="playSpecificMusic(item.song.id)">
             <div class="">{{ item.song.name }} - {{ item.song.ar["0"].name }}</div>
-            <div v-if="item.song.alia.length" style="color: #999; font-size: 1rem;">{{ item.song.alia["0"] }}</div>
+            <div v-if="item.song.alia.length" style="color: #999; font-size: 24rpx;">{{ item.song.alia["0"] }}</div>
             </i-col>
             <i-col span="2">
-            <i-icon type="ios-trash-outline" size="30" color="#d6413d" @click="delPlayMusic(item.song.al.id, item.song.id)" />
+              <i-icon type="trash" size="30" color="#d6413d" @click="delPlayMusic(item.song.al.id, item.song.id)" />
             </i-col>
           </i-row>
         </div>
@@ -82,21 +86,28 @@
         IsPlay: false,
         musicInfo: {},
         IsShowLrc: false,
+        IsShowPlayList: false,
         allPlayList: [],
+        currentPlayList: [],
         IsLike: false,
         imgRotateAngle: 0,
-        audio: ''
+        audio: '',
+        audioBg: '',
+        animation: '',
+        playOrderType: 0
       }
     },
     components: {
       lrc
     },
     computed: {
-      ...mapState(['likeMusicList', 'playRecords'])
+      ...mapState(['likeMusicList', 'playRecords', 'currentMusicId'])
     },
     mounted() {
-      this.musicId = this.$root.$mp.query.id || this.$store.state.currentMusicId;
-      this.allPlayList = this.playRecords.allData;
+//      this.audioBg = "url('../../../static/img/music/play-radio-bg.png') no-repeat center";
+      this.IsShowPlayList = false;
+      this.musicId = this.$root.$mp.query.id || this.currentMusicId;
+      this.allPlayList = this.playRecords;
       this.initPlay();
     },
     methods: {
@@ -104,40 +115,48 @@
       initPlay: function() {
         let vm = this;
         vm.IsShowLrc = false;
+        vm.IsPlay = false;
         vm.getMusicDetail(vm.musicId);
         vm.getMusicUrl(vm.musicId);
-        vm.audio = wx.createInnerAudioContext();
-        vm.audio.src = vm.playUrl;
-        vm.audio.onCanplay(function() {
-          vm.audio.play();
-          vm.IsPlay = true;
-        });
-        vm.audio.onTimeUpdate(function() {
-          vm.currentTime = vm.audio.currentTime;
-          vm.playTime = util.formatterDuration(vm.currentTime);
-        });
-        vm.audio.onEnded(function() {
-          vm.IsPlay = false;
-          vm.audio.pause();
-          vm.currentTime = 0;
-          vm.playTime = '00:00';
-        });
-        vm.audio.onSeeked(function() {
-            console.log(vm.audio);
-        });
-        let durationInterval = setInterval(function () {
+        if(vm.currentMusicId != vm.musicId) {
+          if(vm.audio != '' && vm.audio != null) {
+            vm.audio.destroy();
+          }
+          vm.audio = wx.createInnerAudioContext();
+          vm.audio.src = vm.playUrl;
+          let durationInterval = setInterval(function () {
             if(vm.audio.duration) {
-                clearInterval(durationInterval);
+              clearInterval(durationInterval);
             }
-          vm.getMusicDuration();
-        },50);
-        vm.imgRotateAngle = 0;
-
+            vm.getMusicDuration();
+          },50);
+          vm.audio.onCanplay(function() {
+            vm.audio.play();
+            vm.IsPlay = true;
+          });
+          vm.audio.onTimeUpdate(function() {
+            vm.currentTime = vm.audio.currentTime;
+            vm.playTime = util.formatterDuration(vm.currentTime);
+          });
+          vm.audio.onEnded(function() {
+            vm.IsPlay = false;
+            vm.audio.pause();
+            vm.currentTime = 0;
+            vm.playTime = '00:00';
+          });
+          vm.audio.onSeeked(function() {
+            console.log(vm.audio);
+          });
+        }
+        vm.SET_CURRENT_MUSIC_ID(vm.musicId);
       },
       getMusicDetail: function (id) {
         let vm = this;
         service.getSongDetail(id).then(function (res) {
           vm.musicInfo = res.songs[0];
+          wx.setNavigationBarTitle({
+            title: vm.musicInfo.name
+          });
         })
       },
       getMusicUrl: function(id) {
@@ -146,12 +165,11 @@
           service.getPlayUrl(id).then(function(res) {
             vm.playUrl = res.data["0"].url;
           });
-          vm.SET_CURRENT_MUSIC_ID(id);
           vm.likeMusicList.map(function (item) {
             if(item == id) {
               vm.IsLike = true;
             }
-          })
+          });
         }
       },
       getMusicLyric: function(id) {
@@ -200,7 +218,7 @@
         service.likeMusic(!vm.IsLike, vm.musicId).then(function (res) {
           //更新state
           if(res.code == 200) {
-            alert(vm.IsLike ? '取消喜欢' : '已喜欢');
+//            alert(vm.IsLike ? '取消喜欢' : '已喜欢');
             let currentLikeMusicList = vm.likeMusicList;
             vm.IsLike ? currentLikeMusicList.splice(currentLikeMusicList.indexOf(vm.musicId), 1) : currentLikeMusicList.push(vm.musicId);
             vm.SET_LIKE_MUSIC_LIST(currentLikeMusicList);
@@ -224,21 +242,22 @@
           }
         })
       },
-      hideFormat () {
-        return null;
-      },
       getUserPlayLists: function () {
         let vm = this;
         service.getUserPlayLists(vm.$store.state.user.profile.userId, 0).then(function (res) {
-//          console.log('最近播放',res);
           if(res.code == 200) {
             vm.allPlayList = res.allData;
-            vm.$refs.playListBox.style.bottom = '4rem';
+            vm.IsShowPlayList = true;
           }
         })
       },
       hidePlayList: function() {
-        this.$refs.playListBox.style.bottom = '-100%';
+          this.IsShowPlayList = false;
+      },
+      playSpecificMusic: function(id) {
+        this.musicId = id;
+        this.IsShowPlayList = false;
+        this.initPlay();
       },
       delPlayMusic: function (id, str) {
         let vm = this;
@@ -252,7 +271,7 @@
         vm.IsPlay = false;
         vm.allPlayList.map(function(item, index) {
           if(vm.musicId == item.song.id) {
-            playIndex = playIndex == vm.allPlayList.length - 1 ? 0 : index + 1;
+            playIndex = index == vm.allPlayList.length - 1 ? 0 : index + 1;
           }
         });
         vm.musicId = vm.allPlayList[playIndex].song.id;
@@ -264,11 +283,32 @@
         vm.IsPlay = false;
         vm.allPlayList.map(function(item, index) {
           if(vm.musicId == item.song.id) {
-            playIndex = playIndex == 0 ? vm.allPlayList.length - 1 : index - 1;
+            playIndex = index == 0 ? vm.allPlayList.length - 1 : index - 1;
           }
         });
         vm.musicId = vm.allPlayList[playIndex].song.id;
         vm.initPlay();
+      },
+      changePlayOrder: function() {
+          this.playOrderType = this.playOrderType == 3 ? 0 : this.playOrderType++;
+          switch(this.playOrderType) {
+            case 0: {
+                //随机
+                break;
+            }
+            case 1: {
+                //顺序播放
+                break;
+            }
+            case 2: {
+                //列表循环
+                break;
+            }
+            case 3: {
+                //单曲循环
+                break;
+            }
+          }
       },
       goUrl: function (url) {
         wx.navigateTo({
@@ -310,10 +350,10 @@
     height: 100%;
   }
   .audio-pic-box {
-    width: 60%;
-    margin: 5% auto;
-    background: none;
-  }
+       width: 60%;
+       margin: 5% auto;
+       /*background: url("../../../static/img/music/play-radio-bg.png") center no-repeat;*/
+     }
   .audio-pic-box.playing {
     animation: rotate 30s linear infinite;
   }
@@ -327,13 +367,16 @@
     position: relative;
     border-radius: 50%;
   }
-  .play-list-box {
-    width: 100%;
+  .playListBox {
+    width: 94%;
     height: 100%;
     position: absolute;
     z-index: 99;
-    bottom: -100%;
+    top: 100%;
     transition: all 0.7s;
+  }
+  .playListBox.show {
+    top: 0;
   }
   .list-padding {
     width: 100%;
@@ -356,5 +399,39 @@
   }
   #albumImg {
     transition: all 0.1s;
+  }
+  .musicActionIcon,
+  .playOrderIcon {
+    display: inline-block;
+    width: 88rpx;
+    height: 88rpx;
+    position: relative;
+  }
+  .randomIcon {
+    background: url("../../../static/img/music/random-play-icon.png") center no-repeat;
+  }
+  .sequenceIcon {
+    background: url("../../../static/img/music/sequense-play-icon.png") center no-repeat;
+  }
+  .listCircleIcon {
+    background: url("../../../static/img/music/list-circle-play-icon.png") center no-repeat;
+  }
+  .singleCircle {
+    background: url("../../../static/img/music/single-circle-play-icon.png") center no-repeat;
+  }
+  .prevIcon {
+    background: url("../../../static/img/music/preIcon.png") center no-repeat;
+  }
+  .nextIcon {
+    background: url("../../../static/img/music/nextIcon.png") center no-repeat;
+  }
+  .playIcon {
+    background: url("../../../static/img/music/playIcon.png") center no-repeat;
+  }
+  .pauseIcon {
+    background: url("../../../static/img/music/pauseIcon.png") center no-repeat;
+  }
+  .listIcon {
+    background: url("../../../static/img/music/list-icon.png") center no-repeat;
   }
 </style>

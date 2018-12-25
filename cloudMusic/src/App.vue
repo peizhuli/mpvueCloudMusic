@@ -7,6 +7,9 @@ export default {
     wx.setStorageSync('logs', logs);
     if(!wx.getStorageSync('user')) {
         wx.navigateTo({url: '/pages/login/main'});
+    } else {
+        this.$store.replaceState(Object.assign({}, this.$store.state,wx.getStorageSync("store")));
+//      this.$store.state = wx.getStorageSync('store');
     }
   }
 }

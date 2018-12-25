@@ -16,10 +16,10 @@ const SET_LIKE_MUSIC_LIST = 'SET_LIKE_MUSIC_LIST';
 export default {
 	[SET_PROFILE](state, user) {
 		state.user = user;
-		console.log(state.user);
 	},
   [SET_PLAY_LIST](state, playRecords) {
 	  state.playRecords = playRecords;
+	  console.log(state.playRecords);
   },
   [TOGGLE_COLLECT](state, collectList) {
 	  state.collectList = collectList;

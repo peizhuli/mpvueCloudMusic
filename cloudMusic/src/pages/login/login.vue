@@ -16,19 +16,19 @@
         <input class="login-input" type="password" v-model="password" placeholder="password" />
       </div>
       <div class="button-group">
-        <i-button i-class="login-btn active" inline @click="login()">登录</i-button>
-        <i-button class="login-btn" inline type="ghost" @click="login()">注册</i-button>
+        <button class="login-btn active" inline @click="login()">登录</button>
+        <button class="login-btn" inline type="ghost" @click="login()">注册</button>
       </div>
     </div>
     <div class="other-login-type-box">
-      <p>第三方登录</p>
+      <!--<p>第三方登录</p>-->
+      <i-divider content="第三方登录" color="#333" lineColor="#ccc"></i-divider>
     </div>
   </div>
 </template>
 
 <script>
   import service from '../../service/service';
-//  import util from '../../utils/index';
   import { mapState, mapMutations, mapActions } from 'vuex';
   export default {
       data() {
@@ -47,10 +47,10 @@
                     wx.setStorageSync('cookie', res.bindings["0"].tokenJsonStr);
                     vm.SET_PROFILE(res);
                     wx.setStorageSync('user', res);
-                    wx.setStorageSync('store', vm.$store.state);
                     vm.getLikeMusicList();
                     vm.getUserSubcount();
                     vm.getPlayRecords();
+                    wx.setStorageSync('store', vm.$store.state);
                     wx.showToast({
                       title: '登录成功！',
                       icon: 'success',
@@ -82,12 +82,12 @@
   }
   .logo {
     width: 300rpx;
-    height: 240rpx;
+    height: 200rpx;
     display: inline-block;
   }
   .logo-name {
     color: #d6413d;
-    font-size: 40rpx;
+    font-size: 50rpx;
   }
   .login-form {
     text-align: left;
@@ -101,8 +101,20 @@
     padding: 30rpx 0;
     text-align: center;
   }
-</style>
-<style>
+  .login-btn {
+    width: 34%;
+    display: inline-block;
+    padding: 10rpx 30rpx;
+    margin: 0 20rpx;
+    border: 1px solid #d6413d;
+    border-radius: 10rpx;
+    font-size: 30rpx;
+    color: #d6413d;
+  }
+  .login-btn.active {
+    color: #fff;
+    background: #d6413d!important;
+  }
   .login-form input.ivu-input,
   .login-form input.ivu-input:focus,
   .login-form input.ivu-input:active {
@@ -115,18 +127,10 @@
   .login-input {
     width: 90%;
     height: 50rpx;
+    font-size: 24rpx;
     border-bottom: 1rpx solid #d6413d;
   }
-  button.i-btn.login-btn {
-    width: 34%;
-    padding: 10rpx 30rpx;
-    border: 1px solid #d6413d;
-    border-radius: 20rpx;
-    font-size: 30rpx;
-    color: #d6413d;
-  }
-  button.i-btn.login-btn {
-    color: #fff;
-    background: #d6413d;
+  .other-login-type-box {
+    text-align: center;
   }
 </style>
