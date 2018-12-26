@@ -48,9 +48,9 @@
         </i-row>
       </div>
       <div class="recommend-item">
-        <div class="recommend-title"><i class="recommend-title-icon" />推荐MV<span class="check-more" @click="$router.push('/MV')">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />推荐MV<span class="check-more" @click="goUrl('/pages/MV/main')">更多&gt;</span></div>
         <ul class="recommend-play-list">
-          <li class="recommend-play-item" v-for="item in recommendMVs" :key="item.id" @click="goUrl('/pages/playMV/main?id=' + item.id)">
+          <li class="recommend-play-item" v-for="item in recommendMVs" :key="item.id" @click="goUrl('/pages/playVideo/main?id=' + item.id)">
             <img class="block-img" :src="item.picUrl" />
             <p>{{ item.name }}</p>
             <p>{{ item.copywriter }}</p>
@@ -159,7 +159,7 @@
     </div>
     <div class="tab-content" v-if="currentTab == 'homeTopMusicList'">
       <div class="top-list-box">
-        <div class="top-music-item" v-for="item in topMusicList" :key="item.id" @click="$router.push({path: '/topList', query: { name: item.name }})">
+        <div class="top-music-item" v-for="item in topMusicList" :key="item.id" @click="goUrl('/pages/topMusic/main?name=' + item.name)">
           <i-row>
             <i-col span="8">
               <img class="col-img" :src="item.coverImgUrl" />

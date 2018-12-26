@@ -54,6 +54,9 @@
         this.getSimilarSong(this.id);
         this.getMusicComment(this.id);
       }
+      wx.setNavigationBarTitle({
+        title: '歌曲评论'
+      });
     },
     data() {
       return {
@@ -81,7 +84,38 @@
       },
       getMusicComment: function (id) {
         let vm = this;
-        service.getMusicComment(id).then(function (res) {
+        let currentCommentType = '';
+        switch(this.commentType) {
+          case 0: {
+              currentCommentType = 'music';
+              break;
+          }
+          case 1: {
+            currentCommentType = 'mv';
+            break;
+          }
+          case 2: {
+            currentCommentType = 'playlist';
+            break;
+          }
+          case 3: {
+            currentCommentType = 'album';
+            break;
+          }
+          case 4: {
+            currentCommentType = 'dj';
+            break;
+          }
+          case 4: {
+            currentCommentType = 'video';
+            break;
+          }
+          default: {
+            currentCommentType = 'music';
+            break;
+          }
+        }
+        service.getComment(currentCommentType, id).then(function (res) {
           if(res.code == 200) {
             vm.hotComments = res.hotComments;
             vm.comments = res.comments;

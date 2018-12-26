@@ -16,11 +16,15 @@
     "pages/album/main",
     "pages/artistInfo/main",
     "pages/artistType/main",
+    "pages/artistSubType/main",
     "pages/cloudHotMusic/main",
+    "pages/topMusic/main",
     "pages/dailyRecommendMusic/main",
     "pages/eventsAround/main",
     "pages/playRecord/main",
-    "pages/profileCollection/main"
+    "pages/profileCollection/main",
+    "pages/MV/main",
+    "pages/MVDetail/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

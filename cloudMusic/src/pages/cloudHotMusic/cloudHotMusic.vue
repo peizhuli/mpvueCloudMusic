@@ -8,8 +8,8 @@
           </i-col>
           <i-col span="16" class="hot-music-info">
             <div class="col-content">
-              {{ item.name }}
-              <span v-if="item.alia.length">{{ item.alia[0] }}</span>
+              <div>{{ item.name }}</div>
+              <div v-if="item.alia.length">{{ item.alia[0] }}</div>
               <div>{{ item.ar[0].name }}</div>
             </div>
           </i-col>
@@ -23,6 +23,9 @@
   import service from '../../service/service';
   export default {
     mounted() {
+      wx.setNavigationBarTitle({
+        title: '云音乐热歌榜'
+      });
       this.getCloudHotMusic();
     },
     data() {
@@ -47,12 +50,11 @@
 </script>
 
 <style scoped>
+  .cloud-hot-music-list {
+    padding: 20rpx;
+  }
   .cloud-hot-music-content {
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
     font-size: 30rpx;
-    /*line-height: 2;*/
   }
   .hot-music-info {
     padding-left: 20rpx;

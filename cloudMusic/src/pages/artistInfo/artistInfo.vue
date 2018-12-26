@@ -72,6 +72,9 @@
     mounted() {
       this.artistUID = this.$root.$mp.query.id;
       this.getArtistPlays(this.artistUID);
+      wx.setNavigationBarTitle({
+        title: this.artistName
+      });
     },
     data() {
       return {

@@ -158,7 +158,7 @@
     padding: 2%;
     text-align: left;
     font-size: 30rpx;
-    line-height: 60rpx;
+    line-height: 80rpx;
     color: #000;
     background: #f3f4f8;
   }

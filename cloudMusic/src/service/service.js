@@ -80,15 +80,15 @@ const API = {
   //给评论点赞 (id : 资源 id, 如歌曲 id,mv id、 cid : 评论 id、 t : 是否点赞 ,1 为点赞 ,0 为取消点赞、 tpye: type: 0: 歌曲 1: mv,2: 歌单,3: 专辑,4: 电台,5: 视频)
   likeComment: (t, type, id, commentId ) => request.get('comment/like?t=' + t + '&type=' + type + '&id=' + id + '&cid=' + commentId, null,BASEAPI),
   //歌单评论
-  getPlayListComment: (id, limit=30, offset=0) => request.get('/comment/playlist?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
-  //专辑评论
-  getAlbumComment: (id, limit=30, offset=0) => request.get('/comment/album?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
-  //MV 评论
-  getMVComment: (id, limit=30, offset=0) => request.get('/comment/mv?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
-  //电台评论
-  getFMComment: (id, limit=30, offset=0) => request.get('/comment/dj?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
-  //视频评论
-  getVideoComment: (id, limit=30, offset=0) => request.get('/comment/video?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
+  getComment: (type, id, limit=30, offset=0) => request.get('/comment/' + type + '?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
+  // //专辑评论
+  // getAlbumComment: (id, limit=30, offset=0) => request.get('/comment/album?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
+  // //MV 评论
+  // getMVComment: (id, limit=30, offset=0) => request.get('/comment/mv?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
+  // //电台评论
+  // getFMComment: (id, limit=30, offset=0) => request.get('/comment/dj?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
+  // //视频评论
+  // getVideoComment: (id, limit=30, offset=0) => request.get('/comment/video?id=' + id + '&limit=' + limit + '&offset=' + offset, null, BASEAPI),
   //热门评论
   getHotComments: (type, id) => request.get('/comment/hot?id=' + id + '&type=' + type, null, BASEAPI),
 

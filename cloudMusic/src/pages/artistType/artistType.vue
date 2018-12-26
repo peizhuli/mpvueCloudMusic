@@ -1,13 +1,10 @@
 <template>
   <div class="app-content">
-    <i-row :gutter="16">
-      <i-col i-class="pad-10" span="8" v-for="item in singers" :key="item.id">
-      <div class="hot-singer-item" @click="getArtistPlay(item.id)">
-        <img class="col-img" :src="item.picUrl" />
-        <p>{{ item.name }}</p>
-      </div>
-      </i-col>
-    </i-row>
+    <div class="artist-type-box">
+      <i-cell-group>
+        <i-cell v-for="item in artistType" is-link :key="item.value" :title="item.name" @click="getArtistPlay(item.value, item.name)" />
+      </i-cell-group>
+    </div>
   </div>
 </template>
 
@@ -17,6 +14,10 @@
     data() {
       return {
         artistType: [
+          {
+            name: '热门',
+            value: '-1'
+          },
           {
             name: '华语男歌手',
             value:  1001
@@ -77,22 +78,17 @@
             value:  4003
           }
         ],
-        singers: []
       }
     },
     mounted() {
-      this.getHotSinger();
+      wx.setNavigationBarTitle({
+        title: '歌手分类'
+      });
     },
     methods: {
-      getHotSinger: function() {
-        var vm = this;
-        service.getHotSinger().then(function(res) {
-          vm.singers = res.artists;
-        });
-      },
-      getArtistPlay: function(id) {
+      getArtistPlay: function(cat,name) {
         wx.navigateTo({
-          url: '/pages/artistInfo/main?id=' + id
+          url: '/pages/artistSubType/main?type=' + cat + '&name=' + name
         });
       }
     }

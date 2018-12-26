@@ -23,6 +23,9 @@
   export default {
     mounted() {
       this.getDailyRecommendSongs();
+      wx.setNavigationBarTitle({
+        title: '每日推荐歌曲'
+      });
     },
     data() {
       return {

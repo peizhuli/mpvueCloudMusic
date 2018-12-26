@@ -37,6 +37,11 @@
               password: ''
           }
       },
+    mounted() {
+      wx.setNavigationBarTitle({
+        title: '登录'
+      });
+    },
     methods: {
         ...mapMutations(['SET_PROFILE']),
       ...mapActions(['getLikeMusicList', 'getUserSubcount', 'getPlayRecords']),

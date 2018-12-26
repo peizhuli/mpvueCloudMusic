@@ -10,16 +10,16 @@
     </div>
     <i-row class="song-action-box">
       <i-col span="6">
-      <i-icon :type="IsLike ? 'like_fill' : 'like'" :color="IsLike ? '#d6413d' : ''" size="30" @click="toggleLikeMusic()" />
+        <i-icon :type="IsLike ? 'like_fill' : 'like'" :color="IsLike ? '#d6413d' : ''" size="30" @click="toggleLikeMusic()" />
       </i-col>
       <i-col span="6">
-      <i-icon type="ios-download-outline" size="30" />
+        <i-icon type="ios-download-outline" size="30" />
       </i-col>
       <i-col span="6">
-        <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + musicId)" />
+        <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + musicId + '&type=0')" />
       </i-col>
       <i-col span="6">
-      <i-icon type="share" size="30" />
+        <i-icon type="share" size="30" />
       </i-col>
     </i-row>
     <i-row i-class="slide-box">
@@ -34,7 +34,7 @@
       </i-col>
     </i-row>
     <div class="play-action-box">
-      <i :class="{playOrderIcon: true, randomIcon: playOrderType == 0, sequenceIcon: playOrderType == 1, listCircleIcon: playOrderType == 2, singleCircle: playOrderType == 3}"></i>
+      <i :class="{playOrderIcon: true, randomIcon: playOrderType == 0, sequenceIcon: playOrderType == 1, listCircleIcon: playOrderType == 2, singleCircle: playOrderType == 3}" @click.stop="changePlayOrder()"></i>
       <i class="musicActionIcon prevIcon" @click.stop="preMusic()" ></i>
       <i :class="{musicActionIcon: true, playIcon: IsPlay, pauseIcon: !IsPlay}" @click="togglePlay()"></i>
       <i class="musicActionIcon nextIcon" @click.stop="nextMusic()"></i>
@@ -54,7 +54,7 @@
             <div v-if="item.song.alia.length" style="color: #999; font-size: 24rpx;">{{ item.song.alia["0"] }}</div>
             </i-col>
             <i-col span="2">
-              <i-icon type="trash" size="30" color="#d6413d" @click="delPlayMusic(item.song.al.id, item.song.id)" />
+              <i-icon type="trash" size="30" color="#d6413d" @click="musicOption('del', item.song.al.id, item.song.id)" />
             </i-col>
           </i-row>
         </div>
@@ -79,6 +79,7 @@
         hotComments: [],
         comments: [],
         musicId: '',
+        album: '',
         currentTime: 0,
         maxTime: 0,
         duration: 0,
@@ -88,7 +89,9 @@
         IsShowLrc: false,
         IsShowPlayList: false,
         allPlayList: [],
+        hasInPlayList: false,
         currentPlayList: [],
+        currentPlay: {},
         IsLike: false,
         imgRotateAngle: 0,
         audio: '',
@@ -107,11 +110,23 @@
 //      this.audioBg = "url('../../../static/img/music/play-radio-bg.png') no-repeat center";
       this.IsShowPlayList = false;
       this.musicId = this.$root.$mp.query.id || this.currentMusicId;
-      this.allPlayList = this.playRecords;
+      this.allPlayList = this.currentPlayList = this.playRecords;
+      //当前播放歌曲是否已经存在于播放列表
+      this.playRecords.map(function(item, index) {
+          if(this.musicId == item.song.id) {
+            this.currentPlay = item;
+            this.hasInPlayList = true;
+          }
+      });
+      if(!this.hasInPlayList) {
+          //加入播放列表
+        //this.musicOption('add', '', this.musicId);
+//          this.currentPlay = {};
+      }
       this.initPlay();
     },
     methods: {
-      ...mapMutations(['SET_CURRENT_MUSIC_ID', 'SET_LIKE_MUSIC_LIST']),
+      ...mapMutations(['SET_CURRENT_MUSIC_ID', 'SET_LIKE_MUSIC_LIST', 'SET_PLAY_LIST']),
       initPlay: function() {
         let vm = this;
         vm.IsShowLrc = false;
@@ -139,10 +154,11 @@
             vm.playTime = util.formatterDuration(vm.currentTime);
           });
           vm.audio.onEnded(function() {
-            vm.IsPlay = false;
-            vm.audio.pause();
-            vm.currentTime = 0;
-            vm.playTime = '00:00';
+//            vm.IsPlay = false;
+//            vm.audio.pause();
+//            vm.currentTime = 0;
+//            vm.playTime = '00:00';
+              vm.nextMusic();
           });
           vm.audio.onSeeked(function() {
             console.log(vm.audio);
@@ -153,6 +169,7 @@
       getMusicDetail: function (id) {
         let vm = this;
         service.getSongDetail(id).then(function (res) {
+            console.log(res);
           vm.musicInfo = res.songs[0];
           wx.setNavigationBarTitle({
             title: vm.musicInfo.name
@@ -259,10 +276,11 @@
         this.IsShowPlayList = false;
         this.initPlay();
       },
-      delPlayMusic: function (id, str) {
+      musicOption: function (option,id, str) {
         let vm = this;
-        service.playListOparation('del', id, str).then(function (res) {
+        service.playListOparation(option, id, str).then(function (res) {
           console.log(res);
+          //commit SET_PLAY_LIST
         })
       },
       nextMusic: function () {
@@ -291,6 +309,7 @@
       },
       changePlayOrder: function() {
           this.playOrderType = this.playOrderType == 3 ? 0 : this.playOrderType++;
+          console.log(this.playOrderType);
           switch(this.playOrderType) {
             case 0: {
                 //随机
@@ -399,6 +418,9 @@
   }
   #albumImg {
     transition: all 0.1s;
+  }
+  .slide-box {
+    margin: 40rpx auto;
   }
   .musicActionIcon,
   .playOrderIcon {

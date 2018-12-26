@@ -44,6 +44,9 @@
       let tab = this.$root.$mp.query.tab;
       if(!tab) return;
       tab == 1 ? this.getDynamicNews() : this.getUserFocusList();
+      wx.setNavigationBarTitle({
+        title: '周边动态'
+      });
     },
     data() {
       return {

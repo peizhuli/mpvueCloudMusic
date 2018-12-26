@@ -10,7 +10,7 @@
     <div class="pad-top">
       <div class="hot-singers" @click="goUrl('/pages/artistType/main')">
           <i-icon type="group" size="24" />
-          <span>歌手分类</span>
+          <span @click="goUrl('/pages/artistType/main')">歌手分类</span>
           <i-icon type="enter" size="24" />
       </div>
       <div class="hot-search-box">
@@ -216,7 +216,8 @@
       goBack: function () {
         wx.navigateBack({delta: 1});
       },
-      goUrl: function (wx) {
+      goUrl: function (url) {
+          console.log(url);
         wx.navigateTo({
           url: url
         });

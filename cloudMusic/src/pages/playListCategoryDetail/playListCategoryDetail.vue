@@ -65,18 +65,21 @@
         </li>
       </ul>
     </div>
-    <div class="music-option-box" v-show="showOptionsBox">
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/playVideo/main?id=' + currentMVId)">
-        <i-icon type="live" size="30" color="#d6413d" />
-        <span>查看视频</span>
-      </div>
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/album/main?id=' + currentAlbumId)">
-        <i-icon type="tasklist" size="30" color="#d6413d" />
-        <span>查看专辑</span>
-      </div>
-      <div class="music-option-item" :disable="currentMVId == 0" @click.stop="delSongFromPlayList(currentSongId)">
-        <i-icon type="trash" size="30" color="#d6413d" />
-        <span>删除歌曲</span>
+    <div :class="{musicOptionBox: true, show: showOptionsBox}">
+      <div style="width: 100%; height: 40%; background: transparent;"></div>
+      <div style="width: 100%; height: 60%; background: #fff;">
+        <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/playVideo/main?id=' + currentMVId)">
+          <i-icon type="live" size="30" color="#d6413d" />
+          <span>查看视频</span>
+        </div>
+        <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/album/main?id=' + currentAlbumId)">
+          <i-icon type="tasklist" size="30" color="#d6413d" />
+          <span>查看专辑</span>
+        </div>
+        <div class="music-option-item" :disable="currentMVId == 0" @click.stop="delSongFromPlayList(currentSongId)">
+          <i-icon type="trash" size="30" color="#d6413d" />
+          <span>删除歌曲</span>
+        </div>
       </div>
     </div>
   </div>
@@ -187,12 +190,16 @@
   .play-all-action-icon {
     float: right;
   }
-  .music-option-box {
+  .musicOptionBox {
     position: absolute;
     width: 100%;
-    height: 60%;
-    bottom: 0;
-    background: #fff;
+    height: 100%;
+    top: 100%;
+    /*background: #fff;*/
     z-index: 9;
+    transition: all 0.7s;
+  }
+  .musicOptionBox.show {
+    top: 0;
   }
 </style>

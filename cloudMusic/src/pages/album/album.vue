@@ -13,6 +13,22 @@
         </i-col>
       </i-row>
     </div>
+    <div class="album-option-box">
+      <i-row class="song-action-box">
+        <i-col span="6">
+          <i-icon type="like" size="30" @click="" />
+        </i-col>
+        <i-col span="6">
+          <i-icon type="ios-download-outline" size="30" />
+        </i-col>
+        <i-col span="6">
+          <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + albumId + '&type=3')" />
+        </i-col>
+        <i-col span="6">
+          <i-icon type="share" size="30" />
+        </i-col>
+      </i-row>
+    </div>
     <div class="song-list-box">
       <ul class="song-list">
         <li class="song-item" v-for="(item, index) in songs" :key="item.id">
@@ -48,6 +64,9 @@
   export default {
     mounted() {
       this.albumId = this.$root.$mp.query.id;
+      wx.setNavigationBarTitle({
+        title: '专辑详情'
+      });
       if(this.albumId != '') {
         this.getAlbumInfo(this.albumId);
       }

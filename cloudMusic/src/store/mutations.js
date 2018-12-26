@@ -19,7 +19,6 @@ export default {
 	},
   [SET_PLAY_LIST](state, playRecords) {
 	  state.playRecords = playRecords;
-	  console.log(state.playRecords);
   },
   [TOGGLE_COLLECT](state, collectList) {
 	  state.collectList = collectList;

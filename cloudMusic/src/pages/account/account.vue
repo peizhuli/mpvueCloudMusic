@@ -80,6 +80,9 @@
   import service from '../../service/service';
   export default {
     mounted() {
+      wx.setNavigationBarTitle({
+        title: '我的'
+      });
       this.profileBackUrl = "url(" + this.user.profile.backgroundUrl + ") center no-repeat";
     },
     data() {
