@@ -25,6 +25,9 @@
     mounted() {
       let id = this.$root.$mp.query.id;
       this.getDJCategoryDetail(id);
+      wx.setNavigationBarTitle({
+        title: this.djCategoryList[0].category
+      });
     },
     data() {
       return {
@@ -46,3 +49,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .app-content {
+    padding: 20rpx;
+  }
+</style>

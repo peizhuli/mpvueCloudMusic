@@ -24,7 +24,8 @@
     "pages/playRecord/main",
     "pages/profileCollection/main",
     "pages/MV/main",
-    "pages/MVDetail/main"
+    "pages/MVDetail/main",
+    "pages/playFM/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

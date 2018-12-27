@@ -190,6 +190,9 @@ export default {
     this.getRecommendMVs();
     this.getPrivateContents();
     this.getRecommendDJs();
+    wx.setNavigationBarTitle({
+      title: '首页'
+    });
   },
   data () {
     return {
@@ -292,7 +295,7 @@ export default {
           case 'homeDJ': {
               this.getDJTypes();
               this.getDJPayLists();
-              this.getDJCategoryRecommend();
+//              this.getDJCategoryRecommend();
               break;
           }
           case 'homeTopMusicList': {

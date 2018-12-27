@@ -37,7 +37,7 @@
       </div>
       <div class="play-all-box">
         <span>播放全部</span>
-        <i-icon class="play-all-action-icon" type="other" size="20" />
+        <i-icon i-class="play-all-action-icon" type="other" size="20" />
       </div>
       <ul class="category-detail-list padBtm">
         <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">

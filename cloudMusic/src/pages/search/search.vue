@@ -10,13 +10,13 @@
     <div class="pad-top">
       <div class="hot-singers" @click="goUrl('/pages/artistType/main')">
           <i-icon type="group" size="24" />
-          <span @click="goUrl('/pages/artistType/main')">歌手分类</span>
+          <span>歌手分类</span>
           <i-icon type="enter" size="24" />
       </div>
       <div class="hot-search-box">
         <p>热门搜索</p>
         <div>
-          <span class="hot-search-item" v-for="(item, index) in hotSearchArr" :key="index">{{ item.first }}</span>
+          <span class="hot-search-item" v-for="(item, index) in hotSearchArr" :key="index" @click="searchMusic(item.first, '1', 30, 0)">{{ item.first }}</span>
         </div>
       </div>
       <div class="search-suggest-box" v-if="keyword && searchSuggest.songs">
@@ -38,26 +38,32 @@
         </div>
       </div>
 
-      <div class="search-content" v-show="searchArrs.length">
+      <div class="search-content" v-show="showSearchResult">
         <i-tabs i-class="pad-top tab-bar" :current="currentTab" color="#f759ab" @change="handleChange">
-          <i-tab key="song" title="单曲"></i-tab>
-          <i-tab key="artist" title="歌手"></i-tab>
+          <i-tab key="playMusic" title="单曲"></i-tab>
+          <i-tab key="artistInfo" title="歌手"></i-tab>
           <i-tab key="album" title="专辑"></i-tab>
-          <i-tab key="playLists" title="歌单"></i-tab>
-          <i-tab key="videos" title="视频"></i-tab>
+          <i-tab key="playListCategoryDetail" title="歌单"></i-tab>
+          <i-tab key="playVideo" title="视频"></i-tab>
         </i-tabs>
         <div class="search-detail-box">
           <ul class="">
-            <li v-for="item in searchArrs" :key="item.id">
+            <li class="search-item" v-for="item in searchArrs" :key="item.id" @click="goUrl('/pages/' + currentTab + '/main?id=' + item.id)">
               <!--{{ item.name }}-->
               <i-row v-if="item.picUrl != null">
                 <i-col span="6">
                   <img class="col-img" :src="item.picUrl" />
                 </i-col>
                 <i-col span="18">
-                  <div>{{ item.name }}</div>
+                  <div class="col-content">
+                    <div>{{ item.name }}</div>
+                  </div>
                 </i-col>
               </i-row>
+              <div class="cover-box" v-else-if="item.cover != null">
+                <img :src="item.cover" />
+                <div>{{ item.name }}</div>
+              </div>
               <span v-else>{{ item.name }}</span>
             </li>
           </ul>
@@ -119,21 +125,25 @@
             searchContent: [],
             hotSearchArr: [],
             searchSuggest: {},
-            currentTab: 'song',
+            currentTab: 'playMusic',
+            showSearchResult: false
           }
       },
     mounted() {
-          this.hotSearch();
+      wx.setNavigationBarTitle({
+        title: '搜索'
+      });
+      this.hotSearch();
     },
     methods: {
       handleChange (detail) {
         this.currentTab =  detail.target.key;
         switch(this.currentTab) {
-          case 'song': {
+          case 'playMusic': {
             this.searchMusic(this.keyword, '1', 30, 0);
             break;
           }
-          case 'artist': {
+          case 'artistInfo': {
               this.searchMusic(this.keyword, '100', 30, 0);
             break;
           }
@@ -141,11 +151,11 @@
               this.searchMusic(this.keyword, '10', 30, 0);
             break;
           }
-          case 'playLists': {
+          case 'playListCategoryDetail': {
             this.searchMusic(this.keyword, '1', 30, 0);
             break;
           }
-          case 'videos': {
+          case 'playVideo': {
             this.searchMusic(this.keyword, '1004', 30, 0);
             break;
           }
@@ -153,7 +163,7 @@
       },
       searchMusic: function (keyword, type, limit, offset) {
             let vm = this;
-            console.log(keyword);
+            vm.keyword = keyword;
             service.searMusic(keyword, type, limit, offset).then(function (res) {
               if(res.code == 200) {
                   vm.searchArrs = res.result.artists || res.result.songs || res.result.mvs || res.result.albums || res.result.playlists || [];
@@ -170,9 +180,8 @@
 //                      };
 //                      vm.searchContent.push(obj);
 //                  })
-                console.log(vm.searchArrs);
                   vm.searchSuggest = {};
-
+                  vm.showSearchResult = true;
               }
             })
           },
@@ -217,7 +226,6 @@
         wx.navigateBack({delta: 1});
       },
       goUrl: function (url) {
-          console.log(url);
         wx.navigateTo({
           url: url
         });
@@ -231,6 +239,8 @@
     width: 80%;
     padding-left: 10rpx;
     top: 20rpx;
+    margin-left:30rpx;
+    font-size:30rpx;
     float: left;
   }
   .header-bar {
@@ -270,11 +280,23 @@
     text-align: center;
     padding-top: 30rpx;
     color: #333;
+    overflow: hidden;
   }
   .search-input {
     color: #333;
   }
   .search-detail-box {
-    padding-top: 50rpx;
+    padding: 50rpx 20rpx;
+    font-size: 26rpx;
+  }
+  .cover-box {
+    width: 100%;
+    text-align: center;
+  }
+  .cover-box img {
+    width: 100%;
+  }
+  .search-item {
+    margin-top: 20rpx;
   }
 </style>

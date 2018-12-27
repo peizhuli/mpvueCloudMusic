@@ -34,7 +34,7 @@
       </i-col>
     </i-row>
     <div class="play-action-box">
-      <i :class="{playOrderIcon: true, randomIcon: playOrderType == 0, sequenceIcon: playOrderType == 1, listCircleIcon: playOrderType == 2, singleCircle: playOrderType == 3}" @click.stop="changePlayOrder()"></i>
+      <i :class="{playOrderIcon: true, randomIcon: playOrderType == 0, sequenceIcon: playOrderType == 1, singleCircle: playOrderType == 2}" @click.stop="changePlayOrder()"></i>
       <i class="musicActionIcon prevIcon" @click.stop="preMusic()" ></i>
       <i :class="{musicActionIcon: true, playIcon: IsPlay, pauseIcon: !IsPlay}" @click="togglePlay()"></i>
       <i class="musicActionIcon nextIcon" @click.stop="nextMusic()"></i>
@@ -108,22 +108,24 @@
     },
     mounted() {
 //      this.audioBg = "url('../../../static/img/music/play-radio-bg.png') no-repeat center";
-      this.IsShowPlayList = false;
-      this.musicId = this.$root.$mp.query.id || this.currentMusicId;
-      this.allPlayList = this.currentPlayList = this.playRecords;
+      let vm = this;
+      vm.IsShowPlayList = false;
+      vm.musicId = vm.$root.$mp.query.id || vm.currentMusicId;
+      vm.allPlayList = vm.currentPlayList = vm.playRecords;
+      console.log(vm.musicId);
       //当前播放歌曲是否已经存在于播放列表
-      this.playRecords.map(function(item, index) {
-          if(this.musicId == item.song.id) {
-            this.currentPlay = item;
-            this.hasInPlayList = true;
+      vm.playRecords.map(function(item, index) {
+          if(vm.musicId == item.song.id) {
+            vm.currentPlay = item;
+            vm.hasInPlayList = true;
           }
       });
-      if(!this.hasInPlayList) {
+      if(!vm.hasInPlayList) {
           //加入播放列表
         //this.musicOption('add', '', this.musicId);
 //          this.currentPlay = {};
       }
-      this.initPlay();
+      vm.initPlay();
     },
     methods: {
       ...mapMutations(['SET_CURRENT_MUSIC_ID', 'SET_LIKE_MUSIC_LIST', 'SET_PLAY_LIST']),
@@ -133,17 +135,17 @@
         vm.IsPlay = false;
         vm.getMusicDetail(vm.musicId);
         vm.getMusicUrl(vm.musicId);
-        if(vm.currentMusicId != vm.musicId) {
+        if(vm.currentMusicId != '' && vm.currentMusicId != vm.musicId) {
           if(vm.audio != '' && vm.audio != null) {
             vm.audio.destroy();
           }
           vm.audio = wx.createInnerAudioContext();
           vm.audio.src = vm.playUrl;
           let durationInterval = setInterval(function () {
+            vm.getMusicDuration();
             if(vm.audio.duration) {
               clearInterval(durationInterval);
             }
-            vm.getMusicDuration();
           },50);
           vm.audio.onCanplay(function() {
             vm.audio.play();
@@ -161,7 +163,7 @@
               vm.nextMusic();
           });
           vm.audio.onSeeked(function() {
-            console.log(vm.audio);
+//            console.log(vm.audio);
           });
         }
         vm.SET_CURRENT_MUSIC_ID(vm.musicId);
@@ -169,7 +171,6 @@
       getMusicDetail: function (id) {
         let vm = this;
         service.getSongDetail(id).then(function (res) {
-            console.log(res);
           vm.musicInfo = res.songs[0];
           wx.setNavigationBarTitle({
             title: vm.musicInfo.name
@@ -252,7 +253,7 @@
       },
       getMusicComment: function (id) {
         let vm = this;
-        service.getMusicComment(id).then(function (res) {
+        service.getComment('music', id).then(function (res) {
           if(res.code == 200) {
             vm.hotComments = res.hotComments;
             vm.comments = res.comments;
@@ -308,23 +309,30 @@
         vm.initPlay();
       },
       changePlayOrder: function() {
-          this.playOrderType = this.playOrderType == 3 ? 0 : this.playOrderType++;
+          this.playOrderType = this.playOrderType == 2 ? 0 : this.playOrderType + 1;
           console.log(this.playOrderType);
           switch(this.playOrderType) {
             case 0: {
                 //随机
+                this.currentPlayList = this.allPlayList;
+                this.currentPlayList.sort(function() {
+                    return (Math.random() - 0.5) ? 1 : -1;
+                });
                 break;
             }
             case 1: {
                 //顺序播放
+                this.currentPlayList = this.allPlayList;
                 break;
             }
+//            case 2: {
+//                //列表循环
+//                this.currentPlayList = [].concat(this.allPlayList);
+//                break;
+//            }
             case 2: {
-                //列表循环
-                break;
-            }
-            case 3: {
                 //单曲循环
+                this.currentPlayList = [this.currentPlay];
                 break;
             }
           }
