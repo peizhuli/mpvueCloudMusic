@@ -52,7 +52,7 @@
       this.commentType = this.$root.$mp.query.type;
       if(this.id != '' && this.id != undefined) {
         this.getSimilarSong(this.id);
-        this.getMusicComment(this.id);
+        this.getMusicComment(this.id, this.currentOffset);
       }
       wx.setNavigationBarTitle({
         title: '歌曲评论'
@@ -65,7 +65,9 @@
         recommendSong: {},
         commentContent: '',
         commentType: 0,
-        id: ''
+        id: '',
+        currentOffset: 0,
+        hasMore: false
       }
     },
     filters: {
@@ -82,7 +84,7 @@
           }
         })
       },
-      getMusicComment: function (id) {
+      getMusicComment: function (id, offset) {
         let vm = this;
         let currentCommentType = '';
         switch(this.commentType) {
@@ -115,10 +117,11 @@
             break;
           }
         }
-        service.getComment(currentCommentType, id).then(function (res) {
+        service.getComment(currentCommentType, id, offset).then(function (res) {
           if(res.code == 200) {
-            vm.hotComments = res.hotComments;
-            vm.comments = res.comments;
+            vm.hasMore = res.more;
+            vm.hotComments = vm.hotComments.concat(res.hotComments);
+            vm.comments = vm.comments.concat(res.comments);
           }
         })
       },
@@ -143,6 +146,13 @@
             }
           })
         }
+      }
+    },
+    onReachBottom() {
+      let vm = this;
+      if(vm.hasMore) {
+        vm.currentOffset++;
+        vm.getMusicComment(vm.id, vm.currentOffset);
       }
     }
   }

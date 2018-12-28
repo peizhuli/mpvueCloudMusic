@@ -7,7 +7,7 @@
       </span>
     </div>
     <ul class="sub-category-list">
-      <li class="sub-category-item" v-for="(item, index) in currentSubCategories" :key="index" @click="getCategoryInfos(item.name, 20, 0, 'hot')">
+      <li class="sub-category-item" v-for="(item, index) in currentSubCategories" :key="index" @click="getCategoryInfos(item.name, currentLimit, 0, 'hot')">
         <span :data-type="item.category"> {{ item.name }} </span>
       </li>
     </ul>
@@ -29,9 +29,9 @@
   export default {
     mounted() {
       this.currentCategory = this.$root.$mp.query.category || -1;
-      let currentCategoryName = this.$root.$mp.query.name || '全部';
+      this.currentCategoryName = this.$root.$mp.query.name || '全部';
       this.getCategory();
-      this.getCategoryInfos(currentCategoryName, 20, 0, 'hot');
+      this.getCategoryInfos(this.currentCategoryName, this.currentLimit, this.currentOffset, 'hot');
     },
     data() {
       return {
@@ -39,7 +39,11 @@
         subCategories: [],
         currentSubCategories: [],
         categoryDetail: [],
-        currentCategory: -1
+        currentCategory: -1,
+        currentCategoryName: '',
+        currentOffset: 0,
+        currentLimit: 20,
+        hasMore: false
       }
     },
     methods: {
@@ -60,12 +64,18 @@
         let vm = this;
         service.getWellChosenList(cat,limit,order).then(function(res) {
           if(res.code == 200) {
-            vm.categoryDetail = res.playlists;
+            vm.hasMore = res.more;
+            if(cat == vm.currentCategoryName) {
+              vm.categoryDetail = vm.categoryDetail.concat(res.playlists);
+            } else {
+              vm.currentOffset = 0;
+              vm.categoryDetail = res.playlists;
+            }
+            vm.currentCategoryName = cat;
           }
         });
       },
       getCategoryType: function(type) {
-          console.log(type);
         this.currentSubCategories = [];
         if(type == -1) {
           this.currentSubCategories = this.subCategories;
@@ -78,11 +88,16 @@
         }
       },
       getCategoryDetail: function(id) {
-//        this.$router.push({path: '/songsCategoryDetail', query: { id: id }});
         wx.navigateTo({
           url: '/pages/playListCategoryDetail/main?id=' + id
         });
-      },
+      }
+    },
+    onReachBottom() {
+        if(this.hasMore) {
+          this.currentOffset++;
+          this.getCategoryInfos(this.currentCategoryName, this.currentLimit, this.currentOffset, 'hot');
+        }
     }
   }
 </script>

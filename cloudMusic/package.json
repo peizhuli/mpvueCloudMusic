@@ -19,6 +19,7 @@
     "flyio": "^0.6.4",
     "mpvue": "^1.0.11",
     "mpvue-router-patch": "^0.2.1",
+    "vue-infinite-scroll": "^2.0.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

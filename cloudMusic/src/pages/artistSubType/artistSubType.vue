@@ -22,7 +22,8 @@
         currentName: '',
         currentCat: '-1',
         currentLimit: 20,
-        currentOffset: 0
+        currentOffset: 0,
+        hasMore: false
       }
     },
     mounted() {
@@ -34,19 +35,25 @@
       });
     },
     methods: {
-      getHotSinger: function() {
+      getHotSinger: function(limit, offset) {
         var vm = this;
-        service.getHotSinger().then(function(res) {
-          vm.artistSubType = res.artists;
+        service.getHotSinger(limit, offset).then(function(res) {
+          if(res.code == 200) {
+            vm.hasMore = res.more;
+            vm.artistSubType = vm.artistSubType.concat(res.artists);
+          }
         });
       },
       getArtistType: function (cat, limit, offset) {
         let vm = this;
         if(cat == '-1') {
-          vm.getHotSinger();
+          vm.getHotSinger(vm.currentLimit, vm.currentOffset);
         } else {
           service.getArtisType(cat, limit, offset).then(function (res) {
-            vm.artistSubType = res.artists;
+            if(res.code == 200) {
+              vm.hasMore = res.more;
+              vm.artistSubType = vm.artistSubType.concat(res.artists);
+            }
           })
         }
       },
@@ -54,6 +61,13 @@
         wx.navigateTo({
           url: url
         });
+      }
+    },
+    onReachBottom() {
+      let vm = this;
+      if(vm.hasMore) {
+        vm.currentOffset++;
+        vm.getArtistType(vm.currentCat, vm.currentLimit, vm.currentOffset);
       }
     }
   }

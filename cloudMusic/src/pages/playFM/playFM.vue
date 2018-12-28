@@ -40,6 +40,16 @@
       <i class="musicActionIcon nextIcon" @click.stop="nextMusic()"></i>
       <i class="musicActionIcon listIcon" @click="getUserPlayLists"></i>
     </div>
+    <div class="dj-info-box">
+      <i-row>
+        <i-col span="4">
+          <i-avatar :src="fmInfo.avatarUrl"></i-avatar>
+        </i-col>
+        <i-col span="18">
+          <span>{{ fmInfo.nickname }} - {{ fmInfo.signature }}</span>
+        </i-col>
+      </i-row>
+    </div>
   </div>
 </template>
 
@@ -72,7 +82,7 @@
     },
     mounted() {
       let vm = this;
-      vm.fmId = vm.$root.$mp.query.id || vm.currentMusicId;
+      vm.fmId = vm.$root.$mp.query.id;
       vm.RadioId = vm.$root.$mp.query.RadioId;
       vm.initPlay();
     },
@@ -84,9 +94,9 @@
         vm.getFMDetail(vm.RadioId);
         vm.getFMUrl(vm.fmId);
 //        if(vm.currentMusicId != '' && vm.currentMusicId != vm.fmId) {
-//          if(vm.audio != '' && vm.audio != null) {
-//            vm.audio.destroy();
-//          }
+          if(vm.audio != '' && vm.audio != null) {
+            vm.audio.destroy();
+          }
           vm.audio = wx.createInnerAudioContext();
           vm.audio.src = vm.playUrl;
           let durationInterval = setInterval(function () {
@@ -121,6 +131,7 @@
         let vm = this;
         if(id) {
           service.getDJUrl(id).then(function(res) {
+              console.log(res);
             vm.playUrl = res.data["0"].url;
           });
         }

@@ -210,20 +210,14 @@ export default {
       DJPrograms: [],
       wellChosenDJs: [],
       TypeIndex: 0,
-      djLists: []
+      djLists: [],
+      hasMore: false,
+      currentOffset: 0
     }
   },
   components: {
     headerBar
   },
-//  computed: {
-//    wellChosenPlay: function() {
-//      return this.wellChosenPlay.map((item) => {
-//        item.name = item.name.length > 15 ? item.name.substr(0,10) + '...' : item.name;
-//        item.playCount = item.playCount > 10000 ? parseInt(item.playCount / 10000) + '万' : item.playCount + '人';
-//      });
-//    }
-//  },
   methods: {
     getBanners: function() {
       var vm = this;
@@ -289,7 +283,7 @@ export default {
           }
           case 'homePlayList': {
               this.getHotPlayType();
-              this.getWellChosenPlay();
+              this.getWellChosenPlay(this.currentOffset);
               break;
           }
           case 'homeDJ': {
@@ -311,15 +305,17 @@ export default {
       })
     },
 
-    getWellChosenPlay: function () {
+    getWellChosenPlay: function (offset) {
       let vm = this;
-      service.getWellChosenList().then(function (res) {
-//        vm.wellChosenPlay = res.playlists;
-        res.playlists.map((item) => {
-          item.name = item.name.length > 15 ? item.name.trim().substr(0,15) + '...' : item.name;
-          item.playCount = item.playCount > 10000 ? parseInt(item.playCount / 10000) + '万' : item.playCount + '人';
-          vm.wellChosenPlay.push(item);
-        });
+      service.getWellChosenList('全部', 20, offset).then(function (res) {
+          if(res.code == 200) {
+            vm.wellChosenPlay = vm.wellChosenPlay.concat(res.playlists);
+            vm.hasMore = res.more;
+            vm.wellChosenPlay.map((item) => {
+              item.name = item.name.length > 15 ? item.name.trim().substr(0,15) + '...' : item.name;
+              item.playCount = item.playCount > 10000 ? parseInt(item.playCount / 10000) + '万' : item.playCount + '人';
+            });
+          }
       })
     },
     getTopMusicList: function () {
@@ -370,6 +366,13 @@ export default {
         url: url
       });
     }
+  },
+  onReachBottom() {
+      if(this.hasMore && this.currentTab == 'homePlayList') {
+          this.currentOffset++;
+          console.log(this.currentOffset);
+          this.getWellChosenPlay(this.currentOffset);
+      }
   }
 }
 </script>

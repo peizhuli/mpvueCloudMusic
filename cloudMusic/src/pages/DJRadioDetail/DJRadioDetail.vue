@@ -1,7 +1,7 @@
 <template>
   <div class="app-content">
     <div class="dj-detail-info-box">
-      <div class="dj-category-item" v-for="item in programs" :key="item.id" @click="goUrl('/pages/playFM/main?id=' + item.mainTrackId + '&RadioId=' + item.radio.id)">
+      <div class="dj-category-item" v-for="item in programs" :key="item.id" @click="goUrl('/pages/playFM/main?id=' + item.mainSong.id + '&RadioId=' + item.radio.id)">
         <i-row class="right-content-box">
           <i-col span="8">
             <img class="col-img" :src="item.coverUrl" />
@@ -34,6 +34,7 @@
       getDJProgram: function (id) {
         let vm = this;
         service.getDJPrograme(id, 10, 0).then(function (res) {
+            console.log(res);
           vm.programs = res.programs;
         })
       },
