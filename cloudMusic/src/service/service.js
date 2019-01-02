@@ -120,6 +120,8 @@ const API = {
   getNewMV: (limit=30) => request.get('/mv/first?limit=' + limit, null, BASEAPI),
   //私人FM
   getPrivateFM: () => request.get('/personal_fm', null, BASEAPI),
+  //新歌速递
+  getLatestMusic: (type) => request.get('/top/song?type=' + type, null, BASEAPI),
 
   //推荐MV
   getRecommendMV: () => request.get('/personalized/mv', null, BASEAPI),

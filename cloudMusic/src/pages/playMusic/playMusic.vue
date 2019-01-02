@@ -4,8 +4,10 @@
       <div class="playing-bg-box">
         <img :src="musicInfo.al ? musicInfo.al.picUrl : ''" />
       </div>
-      <div :class="{'audio-pic-box': true, 'playing': IsPlay, 'pause': !IsPlay }" @click="showLrc()">
-        <img ref="albumImg" id="albumImg" :src="musicInfo.al ? musicInfo.al.picUrl : ''" />
+      <div :class="{'audioPicBox': true }" @click="showLrc()">
+        <i :class="{distIcon: true, pause: !IsPlay}"></i>
+        <img class="dist-bg-icon" src="../../../static/img/music/play-radio-bg.png"/>
+        <img :class="{'playing': IsPlay, 'pause': !IsPlay}" ref="albumImg" id="albumImg" :src="musicInfo.al ? musicInfo.al.picUrl : ''" style="border-radius: 50%; width: 60%; height: 40%;" />
       </div>
     </div>
     <i-row class="song-action-box">
@@ -60,7 +62,9 @@
         </div>
       </div>
     </div>
-    <lrc :lrcList="lyric" :currentTime="currentTime" @hideLrc="IsShowLrc = false" v-if="IsShowLrc"></lrc>
+    <div :class="{lrcBox: true, show: IsShowLrc}">
+      <lrc :lrcList="lyric" :currentTime="currentTime" @hideLrc="IsShowLrc = false"></lrc>
+    </div>
   </div>
 </template>
 
@@ -112,7 +116,6 @@
       vm.IsShowPlayList = false;
       vm.musicId = vm.$root.$mp.query.id || vm.currentMusicId;
       vm.allPlayList = vm.currentPlayList = vm.playRecords;
-      console.log(vm.musicId);
       //当前播放歌曲是否已经存在于播放列表
       vm.playRecords.map(function(item, index) {
           if(vm.musicId == item.song.id) {
@@ -263,6 +266,7 @@
       getUserPlayLists: function () {
         let vm = this;
         service.getUserPlayLists(vm.$store.state.user.profile.userId, 0).then(function (res) {
+            console.log(res);
           if(res.code == 200) {
             vm.allPlayList = res.allData;
             vm.IsShowPlayList = true;
@@ -347,9 +351,15 @@
 </script>
 
 <style scoped>
+  .app-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
   .playing-audio-box {
     width: 100%;
-    height: 60%;
+    height: 70%;
     /*position: relative;*/
     /*overflow: hidden;*/
   }
@@ -360,7 +370,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding-bottom: 100rpx;
+    padding-top: 40rpx;
   }
   .playing-bg-box {
     position: absolute;
@@ -376,15 +386,17 @@
     width: 100%;
     height: 100%;
   }
-  .audio-pic-box {
-       width: 60%;
-       margin: 5% auto;
-       /*background: url("../../../static/img/music/play-radio-bg.png") center no-repeat;*/
-     }
-  .audio-pic-box.playing {
+  .audioPicBox {
+    width: 70%;
+    height: 100%;
+    margin:0 auto;
+    padding-top: 30%;
+    text-align: center;
+  }
+  .playing {
     animation: rotate 30s linear infinite;
   }
-  .audio-pic-box.pause {
+  .pause {
     animation-play-state: paused;
   }
   .play-action-box i {
@@ -463,5 +475,43 @@
   }
   .listIcon {
     background: url("../../../static/img/music/list-icon.png") center no-repeat;
+  }
+  .dist-bg-icon {
+    position: absolute;
+    width: 500rpx;
+    height: 500rpx;
+    left:17%;
+    top:13%;
+    z-index: -1;
+  }
+  .distIcon {
+    position: absolute;
+    display: inline-block;
+    width: 222rpx;
+    height: 362rpx;
+    top: 0;
+    right: 20%;
+    background: url("../../../static/img/music/dist-icon.png") center no-repeat;
+    background-size: 100%;
+    z-index: 9;
+  }
+  .distIcon.pause {
+    transform: rotate(-60deg);
+    transform-origin: 22% 17%;
+  }
+  .lrcBox {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: #fff;
+    transition: all 0.7s;
+    background: rgba(0,0,0,0.5);
+    overflow: hidden;
+    z-index: 99;
+  }
+  .lrcBox.show {
+    top: 0;
   }
 </style>

@@ -1,28 +1,70 @@
 <template>
   <div class="app-content">
-    <div class="mv-info-box">
-      <i-row class="mv-info-content">
-        <i-col :span="8">
-        <img class="col-img" :src="mvInfo.cover" />
-        </i-col>
-        <i-col :span="16" class="mv-detail-box">
-        <div class="artist-name">{{ mvInfo.artists ? mvInfo.artists["0"].name : '' }} - {{ mvInfo.name }}</div>
-        <div>{{ mvInfo.briefDesc }}</div>
-        <!--<div>{{ mvInfo.desc.length > 70 ? mvInfo.desc.substr(0,69) + '...' : mvInfo.desc }}</div>-->
-        </i-col>
-      </i-row>
-    </div>
+    <!--<div class="mv-info-box">-->
+      <!--<i-row class="mv-info-content">-->
+        <!--<i-col :span="8">-->
+        <!--<img class="col-img" :src="mvInfo.cover" />-->
+        <!--</i-col>-->
+        <!--<i-col :span="16" class="mv-detail-box">-->
+        <!--<div class="artist-name">{{ mvInfo.artists ? mvInfo.artists["0"].name : '' }} - {{ mvInfo.name }}</div>-->
+        <!--<div>{{ mvInfo.briefDesc }}</div>-->
+        <!--</i-col>-->
+      <!--</i-row>-->
+    <!--</div>-->
     <video class="video" :src="videoUrl" controls></video>
     <div class="similar-mv-box">
-      <div class="similar-title">相似MV</div>
-      <div class="similar-mv-list">
+      <i-tabs i-class="tab-bar" :current="currentTab" color="#f759ab" @change="handleChange">
+        <i-tab key="MVDetail" title="详情"></i-tab>
+        <i-tab key="MVComment" title="评论"></i-tab>
+        <i-tab key="MVRelative" title="相关MV"></i-tab>
+      </i-tabs>
+      <div class="mv-detail-box" v-if="currentTab == 'MVDetail'">
+        <div class="mv-info-list">
+          <div class="mv-info-item">
+            <div>{{ mvInfo.name }}</div>
+            <div>{{ mvInfo.artists ? mvInfo.artists["0"].name : '' }}</div>
+          </div>
+          <div class="mv-info-item">
+            <div>收藏数：{{ mvInfo.likeCount }}</div>
+          </div>
+        </div>
+        <div class="mv-info-list">
+          <div class="mv-info-item">
+            <div>播放数：{{ mvInfo.playCount }}</div>
+            <div>发行时间：{{ mvInfo.publishTime }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="mv-comment-box" v-if="currentTab == 'MVComment'">
+        <div v-if="hotComments.length" class="comment-item" v-for="item in hotComments" :key="item.commentId">
+          <i-row>
+            <i-col span="4" class="avatar-box">
+              <i-avatar :src="item.user ? item.user.avatarUrl : ''"></i-avatar>
+            </i-col>
+            <i-col span="20" class="comment-content">
+              <div class="nickname">{{ item.user ? item.user.nickname : '' }}
+                <span class="float-right">
+                <i-icon type="praise" :color="item.liked ? '#ff0000' : '#999'" size="24" @click="toggleLikeComment(item.liked, item.commentId)"/>
+                {{ item.likedCount > 99 ? '99+' : item.likedCount }}
+              </span>
+              </div>
+              <div>{{ item.time | formatTime }}</div>
+              <div>{{ item.content }}</div>
+            </i-col>
+          </i-row>
+        </div>
+        <div v-if="!hotComments.length">
+          <p>暂无评论</p>
+        </div>
+      </div>
+      <div class="similar-mv-list" v-if="currentTab == 'MVRelative'">
         <div class="similar-mv-item" v-for="item in similarMVs" :key="item.id" @click="refreshVideo(item.id)">
           <i-row class="mv-info-content">
-            <i-col :span="6">
+            <i-col :span="8">
             <img class="col-img" :src="item.cover" />
             <div class="duration">{{ formatterDuration(parseInt(item.duration) / 1000) }}</div>
             </i-col>
-            <i-col :span="18" class="mv-detail-box">
+            <i-col :span="16" class="mv-detail-box">
             <div class="artist-name">{{ item.artists["0"].name }} - {{ item.name }}</div>
             <div>{{ item.briefDesc }}</div>
             </i-col>
@@ -46,18 +88,22 @@
         mvInfo: {},
         videoUrl: '',
         similarMVs: [],
-        videoId: ''
+        hotComments: [],
+        comments: [],
+        videoId: '',
+        currentTab: 'MVDetail',
+        currentOffset: 0
       }
     },
     methods: {
       initVideo: function () {
         this.playMV(this.videoId);
         this.getMVInfo(this.videoId);
-        this.getSimilarMV(this.videoId);
       },
       getMVInfo: function (mvId) {
         let vm = this;
         service.getMVDetail(mvId).then(function (res) {
+            console.log(res);
           if(res.code == 200) {
             vm.mvInfo = res.data;
           }
@@ -89,6 +135,48 @@
             scrollTop: 0,
             duration: 300
           })
+      },
+      getMusicComment: function (id, offset) {
+        let vm = this;
+        service.getComment('video', id, offset).then(function (res) {
+          if(res.code == 200) {
+            vm.hasMore = res.more;
+            vm.hotComments = vm.hotComments.concat(res.hotComments);
+            vm.comments = vm.comments.concat(res.comments);
+          }
+        })
+      },
+      toggleLikeComment: function (t,commentId) {
+        t = t ? 0 : 1;
+        let type = this.commentType;
+        let id= this.id;
+        service.likeComment(t, type, id, commentId).then(function (res) {
+          console.log(res);
+        })
+      },
+      handleChange (detail) {
+        this.currentTab =  detail.target.key;
+        switch(this.currentTab) {
+          case 'MVDetail': {
+            this.getMVInfo(this.videoId);
+            break;
+          }
+          case 'MVComment': {
+            this.getMusicComment(this.videoId, this.currentOffset);
+            break;
+          }
+          case 'MVRelative': {
+            this.getSimilarMV(this.videoId);
+            break;
+          }
+        }
+      }
+    },
+    onReachBottom() {
+      let vm = this;
+      if(vm.currentTab == 'MVComment') {
+        vm.currentOffset++;
+        vm.getMusicComment(vm.videoId, vm.currentOffset);
       }
     }
   }
@@ -133,5 +221,16 @@
   .video {
     width: 100%;
     height: 400rpx;
+  }
+  .mv-info-list {
+    padding: 20rpx 0;
+    border-bottom: 1px solid #999;
+  }
+  .mv-info-item {
+    float: left;
+    width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

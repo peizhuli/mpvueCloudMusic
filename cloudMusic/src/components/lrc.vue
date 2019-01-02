@@ -1,14 +1,17 @@
 <template>
-  <div class="lrc-box">
-    <div class="app-content lrc-list" v-if="lrcList.length">
-      <scroll-view scroll-y scroll-with-animation :scroll-into-view="'line' + currentIndex">
-        <div class="lrc-item" :id="'line' + index" v-for="(item, index) in lrcList" :key="index" :data-index="index">
-          <span :class="{currentLrc: true, active: item.sec < currentTime && lrcList[index + 1].sec >= currentTime}">{{ item.content }}</span>
-        </div>
-      </scroll-view>
-    </div>
-    <div v-else>
-      <span>暂无歌词</span>
+  <div style="width: 100%; height: 100%;">
+    <div style="width: 100%; height: 20%;" @click="hideLrc"></div>
+    <div class="lrc-box">
+      <div class="lrc-list" v-if="lrcList.length">
+        <scroll-view scroll-y="true" scroll-with-animation="true" :scroll-into-view="'line' + currentIndex" style="width: 100%;height:  100%;">
+          <div class="lrc-item" :id="'line' + index" v-for="(item, index) in lrcList" :key="index" :data-index="index">
+            <span :class="{currentLrc: true, active: item.sec < currentTime && lrcList[index + 1].sec >= currentTime}">{{ item.content }}</span>
+          </div>
+        </scroll-view>
+      </div>
+      <div v-else>
+        <span>暂无歌词</span>
+      </div>
     </div>
   </div>
 </template>
@@ -43,19 +46,14 @@
 <style scoped>
   .lrc-box {
     width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: #fff;
-    background: rgba(0,0,0,0.9);
+    height: 40%;
     overflow: hidden;
-    z-index: 99;
   }
   .lrc-list {
+    height: 100%;
     text-align: center;
     font-size:30rpx;
-    line-height:2;
+    line-height: 1.8;
 
   }
   .currentLrc {

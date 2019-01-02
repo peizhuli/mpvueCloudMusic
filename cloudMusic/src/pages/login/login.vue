@@ -49,7 +49,7 @@
               var vm = this;
               service.loginWidthEmail(vm.userName, vm.password).then(function(res) {
                   if(res.code == 200) {
-                    wx.setStorageSync('cookie', res.bindings["0"].tokenJsonStr);
+//                    wx.setStorageSync('cookie', res.bindings["0"].tokenJsonStr);
                     vm.SET_PROFILE(res);
                     wx.setStorageSync('user', res);
                     vm.getLikeMusicList();

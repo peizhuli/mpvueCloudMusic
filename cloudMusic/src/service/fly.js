@@ -5,16 +5,23 @@ const Fly=require("flyio/dist/npm/wx.js");
 const request = new Fly();
 request.config.timeout = 5000;
 request.config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-// request.config.withCredentials = true;
+request.config.withCredentials = true;
 // request.config.headers['cookie'] = wx.getStorageSync('cookie');
 request.interceptors.request.use( req => {
- req.withCredentials = true;
- req.headers.cookie = wx.getStorageSync('cookie') || 'cookie';;
- req.params.cookie = wx.getStorageSync('cookie') || 'cookie';
+  // request.lock();
+  if(req.url.indexOf('login') < 0) {
+    req.headers.cookie = wx.getStorageSync('cookie');
+    req.headers.Authorization = wx.getStorageSync('cookie');
+  }
+ // req.withCredentials = true;
+ // req.params.cookie = wx.getStorageSync('cookie') || 'cookie';
  return req;
 });
 
 request.interceptors.response.use( (response, promise) => {
+  if(response.request.url.indexOf('login') > 0) {
+    wx.setStorageSync('cookie', response.headers["set-cookie"]["0"]);
+  }
   return promise.resolve(response.data);
 }, (err, promise) => {
   console.log(err);
