@@ -5,7 +5,7 @@
       <i-tab key="MVRank" title="MV排行榜"></i-tab>
     </i-tabs>
     <div class="mv-box" v-if="currentTab == 'MVNew'">
-      <div class="mv-item" v-for="item in latestMV" :key="item.id" @click="goUrl('/pages/MVDetail/main?id=' + item.id)">
+      <div class="mv-item" v-for="item in latestMV" :key="item.id" @click="goUrl('/pages/playVideo/main?id=' + item.id)">
         <img :src="item.cover" />
         <p>{{ item.briefDesc }}</p>
       </div>

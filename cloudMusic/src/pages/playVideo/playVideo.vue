@@ -103,7 +103,6 @@
       getMVInfo: function (mvId) {
         let vm = this;
         service.getMVDetail(mvId).then(function (res) {
-            console.log(res);
           if(res.code == 200) {
             vm.mvInfo = res.data;
           }
@@ -130,6 +129,7 @@
       },
       refreshVideo: function(id) {
           this.videoId = id;
+          this.currentTab = 'MVDetail';
           this.initVideo();
           wx.pageScrollTo({
             scrollTop: 0,
@@ -225,6 +225,7 @@
   .mv-info-list {
     padding: 20rpx 0;
     border-bottom: 1px solid #999;
+    overflow:hidden;
   }
   .mv-info-item {
     float: left;

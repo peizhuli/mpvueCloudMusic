@@ -1,6 +1,6 @@
 <template>
   <div class="app-content">
-    <div class="mv-cover">
+    <div class="mv-cover" @click="goUrl('/pages/playVideo/main?id=' + videoId)">
       <img :src="MVDetailInfo.cover" />
     </div>
     <div class="mv-info-box">
@@ -50,14 +50,15 @@
   import service from '../../service/service';
   export default {
     mounted() {
-      let id = this.$root.$mp.query.id;
-      this.getMVDetail(id);
-      this.getSimilarMV(id);
+      this.videoId = this.$root.$mp.query.id;
+      this.getMVDetail(this.videoId);
+      this.getSimilarMV(this.videoId);
     },
     data() {
       return {
         MVDetailInfo: {},
-        relativeRecommendMV: []
+        relativeRecommendMV: [],
+        videoId: ''
       }
     },
     methods: {
@@ -77,7 +78,11 @@
           })
         }
       },
-
+      goUrl: function (url) {
+        wx.goUrl({
+          url: url
+        });
+      }
     }
   }
 </script>
