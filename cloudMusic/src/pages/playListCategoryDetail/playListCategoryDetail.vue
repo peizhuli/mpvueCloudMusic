@@ -16,7 +16,9 @@
             </div>
           </i-col>
         </i-row>
-        <i-row class="category-count-box">
+      </div>
+      <div class="category-count-box">
+        <i-row>
           <i-col class="category-count-item" span="6">
             <i class="music-detail-icon collect-icon" />
             <div>{{ categoryDetail.subscribedCount }}</div>
@@ -39,7 +41,7 @@
         <span>播放全部</span>
         <i-icon i-class="play-all-action-icon" type="other" size="20" />
       </div>
-      <ul class="category-detail-list padBtm">
+      <ul class="category-detail-list">
         <li v-for="(item, index) in categoryDetail.tracks" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">
           <div class="category-item">
             <i-row>
@@ -51,7 +53,7 @@
                   <span>{{ item.name }}</span>
                   <span v-if="item.alia.length"> - {{ item.alia["0"] }}</span>
                   <span class="more-icon-box">
-                    <i class="list-video-icon" v-if="item.mv != 0" @click="goUrl('/pages/playVideo.main?id=' + item.mv)"></i>
+                    <i class="list-video-icon" v-if="item.mv != 0" @click="goUrl('/pages/playVideo/main?id=' + item.mv)"></i>
                     <i-icon type="more" size="20" @click.stop="showCurrentSongOptions(item.al.id, item.mv, item.id)" />
                   </span>
                 </div>
@@ -66,8 +68,8 @@
       </ul>
     </div>
     <div :class="{musicOptionBox: true, show: showOptionsBox}">
-      <div style="width: 100%; height: 40%; background: transparent;"></div>
-      <div style="width: 100%; height: 60%; background: #fff;">
+      <div style="width: 100%; height: 50%; background: transparent;" @click="showOptionsBox=false"></div>
+      <div style="width: 100%; height: 44%; padding: 3% 5%; background: #fff;">
         <div class="music-option-item" :disable="currentMVId == 0" @click.stop="goUrl('/pages/playVideo/main?id=' + currentMVId)">
           <i-icon type="live" size="30" color="#d6413d" />
           <span>查看视频</span>
@@ -132,14 +134,22 @@
 </script>
 
 <style scoped>
+  .app-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
   .category-detail-box {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
   }
 
   .category-describe-box {
     height: 20%;
     padding: 2% 5%;
+    background: #ddd;
   }
 
   .category-info-box {
@@ -148,6 +158,7 @@
   .category-count-box {
     clear: both;
     text-align: center;
+    background: #ddd;
   }
   .category-info-box {
     font-size: 26rpx;
@@ -162,9 +173,10 @@
     right: 0;
   }
   .category-detail-list {
-    padding: 0 5% 200rpx 5%;
+    padding: 0 5%;
   }
   .category-item {
+    position: relative;
     margin-bottom: 20rpx;
     white-space: nowrap;
     font-size: 28rpx;
@@ -174,7 +186,7 @@
   .category-item-name {
     display: inline-block;
     color: #333;
-    width: 96%;
+    width: 80%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -195,7 +207,8 @@
     width: 100%;
     height: 100%;
     top: 100%;
-    /*background: #fff;*/
+    line-height: 2;
+    background: rgba(255,255,255,0.3);
     z-index: 9;
     transition: all 0.7s;
   }

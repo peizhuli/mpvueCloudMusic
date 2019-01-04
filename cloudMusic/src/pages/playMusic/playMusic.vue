@@ -135,10 +135,10 @@
       initPlay: function() {
         let vm = this;
         vm.IsShowLrc = false;
-        vm.IsPlay = false;
-        vm.getMusicDetail(vm.musicId);
-        vm.getMusicUrl(vm.musicId);
         if(vm.currentMusicId != '' && vm.currentMusicId != vm.musicId) {
+          vm.IsPlay = false;
+          vm.getMusicDetail(vm.musicId);
+          vm.getMusicUrl(vm.musicId);
           if(vm.audio != '' && vm.audio != null) {
             vm.audio.destroy();
           }

@@ -143,6 +143,9 @@ export default {
     display: inline-block;
     width: 52rpx;
     height: 36rpx;
+    position: relative;
+    top: 10rpx;
+    margin-right: 10rpx;
     background: url("../static/img/music/list-video-icon.png") center no-repeat;
   }
 

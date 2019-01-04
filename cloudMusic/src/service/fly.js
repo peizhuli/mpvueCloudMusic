@@ -4,6 +4,7 @@
 const Fly=require("flyio/dist/npm/wx.js");
 const request = new Fly();
 request.config.timeout = 5000;
+request.config.headers["X-Tag"]="flyio";
 request.config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 request.config.withCredentials = true;
 // request.config.headers['cookie'] = wx.getStorageSync('cookie');
@@ -11,7 +12,7 @@ request.interceptors.request.use( req => {
   // request.lock();
   if(req.url.indexOf('login') < 0) {
     req.headers.cookie = wx.getStorageSync('cookie');
-    req.headers.Authorization = wx.getStorageSync('cookie');
+    // req.headers.Authorization = wx.getStorageSync('cookie');
   }
  // req.withCredentials = true;
  // req.params.cookie = wx.getStorageSync('cookie') || 'cookie';

@@ -97,6 +97,7 @@
     },
     methods: {
       initVideo: function () {
+        this.currentTab = 'MVDetail';
         this.playMV(this.videoId);
         this.getMVInfo(this.videoId);
       },
