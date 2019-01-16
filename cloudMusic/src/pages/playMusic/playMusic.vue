@@ -12,16 +12,16 @@
     </div>
     <i-row class="song-action-box">
       <i-col span="6">
-        <i-icon :type="IsLike ? 'like_fill' : 'like'" :color="IsLike ? '#d6413d' : ''" size="30" @click="toggleLikeMusic()" />
+        <i-icon :type="IsLike ? 'like_fill' : 'like'" color="#d6413d" size="40" @click="toggleLikeMusic()" />
       </i-col>
       <i-col span="6">
-        <i-icon type="ios-download-outline" size="30" />
+        <i-icon type="ios-download-outline" color="#d6413d" size="40" />
       </i-col>
       <i-col span="6">
-        <i-icon type="message" size="30" @click="goUrl('/pages/comment/main?id=' + musicId + '&type=0')" />
+        <i-icon type="message" size="40" color="#d6413d" @click="goUrl('/pages/comment/main?id=' + musicId + '&type=0')" />
       </i-col>
       <i-col span="6">
-        <i-icon type="share" size="30" />
+        <i-icon type="share" size="40" color="#d6413d" />
       </i-col>
     </i-row>
     <i-row i-class="slide-box">
@@ -134,7 +134,7 @@
       initPlay: function() {
         let vm = this;
         vm.IsShowLrc = false;
-        if(vm.currentMusicId != '' && vm.currentMusicId != vm.musicId) {
+        if(!vm.currentMusicId || vm.currentMusicId != vm.musicId) {
           vm.IsPlay = false;
           vm.getMusicDetail(vm.musicId);
           vm.getMusicUrl(vm.musicId);
@@ -440,6 +440,7 @@
   }
   .slide-box {
     margin: 40rpx auto;
+    color: #fff;
   }
   .musicActionIcon,
   .playOrderIcon {

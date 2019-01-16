@@ -34,7 +34,6 @@
       getDJProgram: function (id) {
         let vm = this;
         service.getDJPrograme(id, 10, 0).then(function (res) {
-            console.log(res);
           vm.programs = res.programs;
         })
       },

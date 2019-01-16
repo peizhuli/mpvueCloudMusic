@@ -6,7 +6,7 @@ const request = new Fly();
 request.config.timeout = 5000;
 request.config.headers["X-Tag"]="flyio";
 request.config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-// request.config.withCredentials = true;
+request.config.withCredentials = true;
 // request.config.headers['cookie'] = wx.getStorageSync('cookie');
 request.interceptors.request.use( req => {
   // request.lock();

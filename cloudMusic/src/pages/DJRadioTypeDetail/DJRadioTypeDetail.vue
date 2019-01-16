@@ -2,18 +2,7 @@
   <div class="app-content">
     <div class="dj-category-info-box">
       <div class="dj-category-item" v-for="item in djCategoryList" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">
-        <i-row class="right-content-box" type="flex" align="center">
-          <i-col span="8">
-            <img class="col-img" :src="item.picUrl" />
-          </i-col>
-          <i-col span="16" class="right-info-box">
-            <div class="col-content">
-              <div>{{ item.name }}</div>
-              <div>{{ item.rcmdtext }}</div>
-              <div>{{ item.lastProgramName }}</div>
-            </div>
-          </i-col>
-        </i-row>
+        <card :picUrl="item.picUrl" :title="item.name" :subTitle="item.lastProgramName"></card>
       </div>
     </div>
   </div>
@@ -21,30 +10,64 @@
 
 <script>
   import service from '../../service/service';
+  import Card from '../../components/card.vue';
   export default {
     mounted() {
       let id = this.$root.$mp.query.id;
-      this.getDJCategoryDetail(id);
-      wx.setNavigationBarTitle({
-        title: this.djCategoryList[0].category
-      });
+      console.log(id);
+      if(id) {
+        this.getDJCategoryDetail(id);
+      } else {
+          this.getDJPayList();
+        wx.setNavigationBarTitle({
+          title: '付费精选'
+        });
+      }
     },
     data() {
       return {
-        djCategoryList: []
+        djCategoryList: [],
+        hasMore: false,
+        currentOffset: 0,
       }
+    },
+    components: {
+      Card
     },
     methods: {
       getDJCategoryDetail: function (id) {
         let vm = this;
         service.getDJCategoryRecommend(id).then(function (res) {
-          vm.djCategoryList = res.djRadios;
+            if(res.code == 200) {
+              vm.currentOffset = 0;
+              vm.djCategoryList = res.djRadios;
+              vm.$nextTick(function () {
+                wx.setNavigationBarTitle({
+                  title: this.djCategoryList[0].category
+                });
+              });
+            }
         })
+      },
+      getDJPayList: function () {
+        let vm = this;
+        service.getDJPayList(20, vm.currentOffset).then(function (res) {
+          vm.currentOffset = 0;
+          if(res.code == 200) {
+              vm.djCategoryList = res.data.list;
+          }
+        });
       },
       goUrl: function (url) {
         wx.navigateTo({
           url: url
         });
+      }
+    },
+    onReachBottom() {
+      if(this.hasMore) {
+        this.currentOffset++;
+        this.getDJPayList();
       }
     }
   }

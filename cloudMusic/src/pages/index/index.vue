@@ -109,14 +109,8 @@
             </swiper-item>
           </block>
         </swiper>
-        <!--<i-row class="dj-list">-->
-          <!--<i-col span="6" class="dj-item" v-for="item in wellChosenDJs" :key="item.id" @click="goUrl('/pages/DJRadioDetail/main?id=' + item.id)">-->
-          <!--<img class="col-img" :src="item.picUrl" />-->
-          <!--<p>{{ item.name }}</p>-->
-          <!--</i-col>-->
-        <!--</i-row>-->
         <div class="more-info">
-          <i-button type="error" ghost>更多付费节目</i-button>
+          <i-button type="error" ghost @click="goUrl('/pages/DJRadioTypeDetail/main')">更多付费节目</i-button>
         </div>
       </div>
       <div class="" v-for="(djItem, djIndex) in djLists" :key="djIndex">
@@ -132,7 +126,7 @@
             <i-col span="18">
               <div class="col-content">
                 <div>{{ item.name }}</div>
-                <div>{{ item.rcmdtext }}</div>
+                <!--<div>{{ item.rcmdtext }}</div>-->
                 <div>{{ item.lastUpdateProgramName }}</div>
               </div>
             </i-col>

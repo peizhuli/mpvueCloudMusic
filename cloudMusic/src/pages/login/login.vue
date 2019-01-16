@@ -8,11 +8,9 @@
       <label>用户名</label>
       <div class="login-item">
         <input class="login-input" v-model="userName" placeholder="userName" />
-        <!--<i-input i-class="login-input" :value="userName" placeholder="userName"/>-->
       </div>
       <label>密码</label>
       <div class="login-item">
-        <!--<i-input i-class="login-input" type="password" v-model="password" placeholder="password" />-->
         <input class="login-input" type="password" v-model="password" placeholder="password" />
       </div>
       <div class="button-group">
@@ -41,6 +39,14 @@
       wx.setNavigationBarTitle({
         title: '登录'
       });
+      window.document.onkeydown = function(e) {
+        event = event || window.event;
+        if (!event) return;
+        let currentKey = event.charCode || event.keyCode;
+        if(currentKey == 13) {
+            this.login();
+        }
+      }
     },
     methods: {
         ...mapMutations(['SET_PROFILE']),
@@ -55,7 +61,9 @@
                     vm.getLikeMusicList();
                     vm.getUserSubcount();
                     vm.getPlayRecords();
-                    wx.setStorageSync('store', vm.$store.state);
+                    vm.$nextTick(function() {
+                      wx.setStorageSync('store', vm.$store.state);
+                    });
                     wx.showToast({
                       title: '登录成功！',
                       icon: 'success',
