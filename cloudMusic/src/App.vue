@@ -53,6 +53,7 @@ export default {
     height: 260rpx;
   }
   .col-content {
+    font-size: 32rpx;
     padding-left: 20rpx;
     display: flex;
     flex-direction:column;

@@ -49,17 +49,9 @@
         <div class="search-detail-box">
           <ul class="">
             <li class="search-item" v-for="item in searchArrs" :key="item.id" @click="goUrl('/pages/' + currentTab + '/main?id=' + item.id)">
-              <!--{{ item.name }}-->
-              <i-row v-if="item.picUrl != null">
-                <i-col span="6">
-                  <img class="col-img" :src="item.picUrl" />
-                </i-col>
-                <i-col span="18">
-                  <div class="col-content">
-                    <div>{{ item.name }}</div>
-                  </div>
-                </i-col>
-              </i-row>
+              <div v-if="item.picUrl != null">
+                <card :picUrl="item.picUrl" :title="item.name"></card>
+              </div>
               <div class="cover-box" v-else-if="item.cover != null">
                 <img :src="item.cover" />
                 <div>{{ item.name }}</div>
@@ -76,6 +68,7 @@
 <script>
   import service from '../../service/service';
   import goTop from '../../components/goTop';
+  import Card from '../../components/card.vue';
   export default {
       data() {
           return {
@@ -134,7 +127,8 @@
           }
       },
     components: {
-      goTop
+      goTop,
+      Card
     },
     mounted() {
       wx.setNavigationBarTitle({
@@ -303,9 +297,11 @@
     box-shadow: 0 0 0 rgba(125,125,125,0.8);
   }
   .hot-singers {
+    width: 100%;
+    height: 100rpx;
     font-size: 30rpx;
     text-align: center;
-    padding-top: 30rpx;
+    line-height: 100rpx;
     color: #333;
     overflow: hidden;
   }

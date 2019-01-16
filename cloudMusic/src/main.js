@@ -1,7 +1,8 @@
-import Vue from 'vue'
-import App from './App'
+import Vue from 'vue';
+import App from './App';
 import MpvueRouterPatch from 'mpvue-router-patch';
-import store from './store/store'
+import store from './store/store';
+import cookies from 'weapp-cookie';
 // Vue.use(MpvueRouterPatch);
 Vue.config.productionTip = false;
 App.mpType = 'app'

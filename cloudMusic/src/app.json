@@ -21,6 +21,7 @@
     "pages/cloudHotMusic/main",
     "pages/topMusic/main",
     "pages/dailyRecommendMusic/main",
+    "pages/dailyRecommendPlayList/main",
     "pages/eventsAround/main",
     "pages/playRecord/main",
     "pages/profileCollection/main",
@@ -31,7 +32,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#d6413d",
-    "navigationBarTitleText": "WeChat",
+    "navigationBarTitleText": "首页",
     "navigationBarTextStyle": "#fff"
   },
   "tabBar": {

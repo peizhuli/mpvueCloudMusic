@@ -5,12 +5,12 @@
       <i-tab key="all" title="全部"></i-tab>
     </i-tabs>
     <div class="play-record-box" v-if="currentTab == 'weekly'">
-      <div class="" v-if="weekList.length" v-for="item in weekList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
-        <i-row class="play-list-box">
-          <i-col span="6">
+      <div class="" v-if="weekList.length">
+        <i-row class="play-list-box" v-for="item in weekList" :key="item.song.id" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
+          <i-col span="8">
           <img class="col-img" :src="item.song.al.picUrl" />
           </i-col>
-          <i-col span="18" class="play-list-content">
+          <i-col span="16">
             <div class="col-content">
               <div>{{ item.song.name }} - {{ item.song.ar[0].name }}</div>
               <div v-if="item.song.alia.length">{{ item.song.alia["0"] }}</div>
@@ -23,12 +23,12 @@
       </div>
     </div>
     <div class="play-record-box" v-if="currentTab == 'all'">
-      <div class="" v-if="allList.length" v-for="item in allList" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
-        <i-row class="play-list-box">
-          <i-col span="6">
+      <div class="" v-if="allList.length">
+        <i-row class="play-list-box" v-for="item in allList" :key="item.song.id" @click="goUrl('/pages/playMusic/main?id=' + item.song.id)">
+          <i-col span="8">
             <img class="col-img" :src="item.song.al.picUrl" />
           </i-col>
-          <i-col span="18" class="play-list-content">
+          <i-col span="16">
             <div class="col-content">
               <div>{{ item.song.name }} - {{ item.song.ar[0].name }}</div>
               <div v-if="item.song.alia.length">{{ item.song.alia["0"] }}</div>

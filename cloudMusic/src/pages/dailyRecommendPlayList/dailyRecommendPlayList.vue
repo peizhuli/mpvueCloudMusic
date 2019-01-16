@@ -1,8 +1,8 @@
 <template>
   <div class="app-content">
     <div class="recommend-list">
-      <div v-for="item in recommends" :key="item.id" @click="goUrl('/pages/playMusic/main?id=' + item.id)">
-        <card :picUrl="item.album.picUrl" :title="item.name" :subTitle="item.reason"></card>
+      <div v-for="item in recommends" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
+        <card :picUrl="item.picUrl" :title="item.name" :subTitle="item.reason"></card>
       </div>
     </div>
   </div>
@@ -10,11 +10,12 @@
 
 <script>
   import service from '../../service/service';
+  import Card from '../../components/card.vue';
   export default {
     mounted() {
-      this.getDailyRecommendSongs();
+      this.getDailyRecomment();
       wx.setNavigationBarTitle({
-        title: '每日推荐歌曲'
+        title: '每日歌单推荐'
       });
     },
     data() {
@@ -22,10 +23,13 @@
         recommends: []
       }
     },
+    components: {
+      Card
+    },
     methods: {
-      getDailyRecommendSongs: function () {
+      getDailyRecomment: function () {
         let vm = this;
-        service.getDailyRecommendSongs().then(function (res) {
+        service.getDailyRecomment().then(function (res) {
           if(res.code == 200) {
             vm.recommends = res.recommend;
           }

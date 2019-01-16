@@ -111,7 +111,6 @@
       ...mapState(['likeMusicList', 'playRecords', 'currentMusicId'])
     },
     mounted() {
-//      this.audioBg = "url('../../../static/img/music/play-radio-bg.png') no-repeat center";
       let vm = this;
       vm.IsShowPlayList = false;
       vm.musicId = vm.$root.$mp.query.id || vm.currentMusicId;

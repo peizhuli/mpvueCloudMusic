@@ -36,7 +36,7 @@
         </i-col>
       </i-row>
       <div class="recommend-item">
-        <div class="recommend-title"><i class="recommend-title-icon" />推荐歌单<span class="check-more">更多&gt;</span></div>
+        <div class="recommend-title"><i class="recommend-title-icon" />推荐歌单<span class="check-more" @click="goUrl('/pages/dailyRecommendPlayList/main')">更多&gt;</span></div>
         <i-row class="recommend-play-list" :gutter="24">
           <i-col :span="12" i-class="recommend-play-item" v-for="item in recommendMusic" :key="item.id" @click="goUrl('/pages/playListCategoryDetail/main?id=' + item.id)">
             <div class="play-pic-box">
@@ -69,15 +69,9 @@
       </div>
       <div class="recommend-item">
         <div class="recommend-title"><i class="recommend-title-icon" />推荐电台<span class="check-more">更多&gt;</span></div>
-        <i-row class="right-content-box" v-for="item in recommendDJs" :key="item.id" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + item.id)">
-          <i-col span="8" i-class="play-pic-box">
-            <img class="col-img" :src="item.picUrl" />
-          </i-col>
-          <i-col span="16" class="right-info-box">
-            <p>{{ item.name }}</p>
-            <p>{{ item.copywriter }}</p>
-          </i-col>
-        </i-row>
+        <div v-for="item in recommendDJs" :key="item.id" @click="goUrl('/pages/DJRadioTypeDetail/main?id=' + item.id)">
+          <card :picUrl="item.picUrl" :title="item.name" :subTitle="item.copywriter"></card>
+        </div>
       </div>
     </div>
     <div class="tab-content" v-if="currentTab == 'homePlayList'">
@@ -183,6 +177,7 @@
 import util from '../../utils/index';
 import service from '../../service/service';
 import headerBar from '../../components/header';
+import Card from '../../components/card.vue';
 export default {
   mounted() {
     this.getBanners();
@@ -216,7 +211,8 @@ export default {
     }
   },
   components: {
-    headerBar
+    headerBar,
+    Card
   },
   methods: {
     getBanners: function() {

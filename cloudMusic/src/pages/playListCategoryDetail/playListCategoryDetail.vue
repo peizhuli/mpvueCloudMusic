@@ -2,20 +2,7 @@
   <div class="app-content">
     <div class="category-detail-box">
       <div class="category-describe-box">
-        <i-row>
-          <i-col span="8">
-            <img class="col-img" :src="categoryDetail.coverImgUrl" />
-          </i-col>
-          <i-col span="16" class="category-info-content">
-            <div class="category-info-box col-content">
-              <div>
-                <i-avatar :src="categoryDetail.creator ? categoryDetail.creator.avatarUrl : ''"></i-avatar>
-                {{ categoryDetail.creator ? categoryDetail.creator.nickname : '' }}
-              </div>
-              <div>{{ categoryDetail.name }}</div>
-            </div>
-          </i-col>
-        </i-row>
+        <card :hasAvatar="true" :avatartUrl="categoryDetail.creator ? categoryDetail.creator.avatarUrl : ''" :picUrl="categoryDetail.coverImgUrl" :title="categoryDetail.creator ? categoryDetail.creator.nickname : ''" :subTitle="categoryDetail.name"></card>
       </div>
       <div class="category-count-box">
         <i-row>
@@ -89,6 +76,7 @@
 
 <script>
   import service from '../../service/service';
+  import Card from '../../components/card.vue';
   export default {
     mounted() {
       let id = this.$root.$mp.query.id;
@@ -102,6 +90,9 @@
         currentSongId: '',
         showOptionsBox: false
       }
+    },
+    components: {
+      Card
     },
     methods: {
       getCategoryDetail: function(id) {
